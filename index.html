@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a237e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="জাহাঙ্গীর সিস্টেম">
+<link rel="manifest" href="manifest.json">
+<title>জাহাঙ্গীর সিস্টেম v7</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1a237e; --primary-light: #534bae; --primary-dark: #000051;
+  --accent: #00c853; --accent2: #ff6d00; --red: #c62828; --red-light: #ffebee;
+  --green: #1b5e20; --green-light: #e8f5e9; --purple: #4a148c; --purple-light: #f3e5f5;
+  --teal: #004d40; --teal-light: #e0f2f1; --orange: #e65100; --orange-light: #fff3e0;
+  --bg: #f0f2ff; --card: #ffffff; --text: #1a1a2e; --text-muted: #607d8b;
+  --border: #e0e0e0; --shadow: 0 4px 20px rgba(26,35,126,0.12);
+  --shadow-lg: 0 8px 40px rgba(26,35,126,0.18); --radius: 16px; --radius-sm: 10px;
+  --whatsapp: #25d366; --nav-h: 64px; --header-h: 60px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; width: 100%; overflow: hidden; font-family: 'Hind Siliguri','Noto Sans Bengali',sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── SPLASH ── */
+#splash { position:fixed;inset:0;background:linear-gradient(145deg,#000051 0%,#1a237e 50%,#283593 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s ease; }
+#splash .logo { font-size:64px;margin-bottom:16px;animation:pulse 1.5s infinite; }
+#splash h1 { color:#fff;font-size:22px;font-weight:700;text-align:center;line-height:1.4; }
+#splash p { color:rgba(255,255,255,0.6);font-size:13px;margin-top:8px; }
+#splash .bar { width:200px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-top:40px;overflow:hidden; }
+#splash .bar-fill { height:100%;background:var(--accent);border-radius:2px;animation:load 1.8s ease forwards; }
+@keyframes load { from{width:0} to{width:100%} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+#splash.hidden { opacity:0;pointer-events:none; }
+
+/* ── LOGIN SCREEN ── */
+#loginScreen {
+  position:fixed;inset:0;background:linear-gradient(160deg,#000051 0%,#1a237e 40%,#283593 70%,#1565c0 100%);
+  display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9000;overflow-y:auto;padding:20px;
+}
+#loginScreen.show { display:flex; }
+.login-box {
+  background:rgba(255,255,255,0.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);
+  border-radius:24px;padding:32px 24px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+.login-logo { text-align:center;margin-bottom:24px; }
+.login-logo .logo-icon { font-size:56px; }
+.login-logo h1 { color:#fff;font-size:20px;font-weight:800;margin-top:8px; }
+.login-logo p { color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px; }
+.login-tabs { display:flex;background:rgba(255,255,255,0.1);border-radius:12px;padding:3px;margin-bottom:24px; }
+.login-tab { flex:1;padding:10px;border:none;background:none;border-radius:10px;color:rgba(255,255,255,0.6);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s; }
+.login-tab.active { background:rgba(255,255,255,0.2);color:#fff; }
+.login-field { margin-bottom:14px; }
+.login-field label { display:block;color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;margin-bottom:6px; }
+.login-field input {
+  width:100%;padding:13px 16px;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:12px;color:#fff;font-family:inherit;font-size:14px;outline:none;transition:border-color 0.2s;
+}
+.login-field input::placeholder { color:rgba(255,255,255,0.35); }
+.login-field input:focus { border-color:rgba(255,255,255,0.5); }
+.login-btn {
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#00e676);border:none;border-radius:12px;
+  color:#fff;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:14px;
+  box-shadow:0 4px 16px rgba(0,200,83,0.3);
+}
+.login-btn:active { transform:scale(0.97); }
+.google-btn {
+  width:100%;padding:13px;background:rgba(255,255,255,0.95);border:none;border-radius:12px;
+  color:#333;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+.google-btn:active { transform:scale(0.97); }
+.login-divider { display:flex;align-items:center;gap:10px;margin:14px 0;color:rgba(255,255,255,0.4);font-size:12px; }
+.login-divider::before,.login-divider::after { content:'';flex:1;height:1px;background:rgba(255,255,255,0.15); }
+.login-error { background:rgba(198,40,40,0.2);border:1px solid rgba(198,40,40,0.4);border-radius:10px;padding:10px 14px;color:#ff8a80;font-size:13px;margin-bottom:12px;display:none; }
+.login-error.show { display:block; }
+
+/* ── APP SHELL ── */
+#app { height:100%;display:flex;flex-direction:column;overflow:hidden; }
+.header { height:var(--header-h);background:var(--primary);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,0.3);position:relative;z-index:10; }
+.header-left { display:flex;align-items:center;gap:10px; }
+.header-title { color:#fff;font-size:17px;font-weight:700; }
+.header-sub { color:rgba(255,255,255,0.65);font-size:11px; }
+.header-date { color:rgba(255,255,255,0.8);font-size:12px;text-align:right; }
+.header-icon { font-size:26px; }
+.user-avatar { width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer;overflow:hidden; }
+.user-avatar img { width:100%;height:100%;object-fit:cover; }
+
+/* ── PAGES ── */
+.pages { flex:1;overflow:hidden;position:relative; }
+.page { position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:16px 14px 80px;display:none;-webkit-overflow-scrolling:touch; }
+.page.active { display:block;animation:fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { height:var(--nav-h);background:#fff;border-top:1px solid var(--border);display:flex;align-items:stretch;flex-shrink:0;box-shadow:0 -4px 20px rgba(0,0,0,0.08);position:relative;z-index:10; }
+.nav-item { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:none;transition:all 0.2s;color:var(--text-muted);font-size:10px;font-family:inherit;padding:6px 2px;position:relative; }
+.nav-item .nav-icon { font-size:22px;transition:transform 0.2s; }
+.nav-item.active { color:var(--primary); }
+.nav-item.active .nav-icon { transform:scale(1.15); }
+.nav-item.active::after { content:'';position:absolute;bottom:0;left:20%;right:20%;height:3px;background:var(--primary);border-radius:3px 3px 0 0; }
+
+/* ── CARDS ── */
+.card { background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid rgba(255,255,255,0.8); }
+.card-title { font-size:14px;font-weight:700;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:8px; }
+.card-title .icon { font-size:18px; }
+.kpi-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px; }
+.kpi-card { padding:14px 12px;border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden; }
+.kpi-card::before { content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;opacity:0.15;background:currentColor; }
+.kpi-label { font-size:11px;font-weight:600;opacity:0.75; }
+.kpi-value { font-size:20px;font-weight:800;line-height:1.1; }
+.kpi-unit { font-size:10px;opacity:0.65; }
+.kpi-income { background:var(--green-light);color:var(--green); }
+.kpi-expense { background:var(--red-light);color:var(--red); }
+.kpi-net { background:#e8eaf6;color:var(--primary); }
+.kpi-debt { background:var(--red-light);color:var(--red); }
+.kpi-goat { background:var(--teal-light);color:var(--teal); }
+.kpi-tea { background:var(--green-light);color:var(--green); }
+.section-hdr { font-size:15px;font-weight:700;color:var(--text);margin:18px 0 10px;display:flex;align-items:center;gap:8px; }
+.list-item { display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border); }
+.list-item:last-child { border-bottom:none; }
+.list-icon { width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
+.list-body { flex:1;min-width:0; }
+.list-title { font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.list-sub { font-size:11px;color:var(--text-muted);margin-top:2px; }
+.list-amount { font-size:15px;font-weight:700;flex-shrink:0; }
+.text-income { color:var(--green); } .text-expense { color:var(--red); } .text-neutral { color:var(--primary); }
+.badge { padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600; }
+.badge-green { background:var(--green-light);color:var(--green); }
+.badge-red { background:var(--red-light);color:var(--red); }
+.badge-blue { background:#e8eaf6;color:var(--primary); }
+.badge-orange { background:var(--orange-light);color:var(--orange); }
+.badge-purple { background:var(--purple-light);color:var(--purple); }
+.progress-wrap { background:#eee;border-radius:20px;height:8px;overflow:hidden;margin-top:6px; }
+.progress-fill { height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent),#00e676);transition:width 0.5s ease; }
+.wa-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.wa-btn { background:linear-gradient(135deg,var(--whatsapp),#128c7e);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;box-shadow:0 4px 16px rgba(37,211,102,0.3);transition:all 0.2s;text-align:center;line-height:1.3; }
+.wa-btn:active { transform:scale(0.96); }
+.wa-btn .wa-icon { font-size:26px; }
+.form-group { margin-bottom:14px; }
+.form-label { font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;display:block; }
+.form-input, .form-select { width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--text);background:#fff;outline:none;transition:border-color 0.2s;-webkit-appearance:none;appearance:none; }
+.form-input:focus, .form-select:focus { border-color:var(--primary); }
+.form-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.btn { padding:13px 20px;border-radius:var(--radius-sm);border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px; }
+.btn:active { transform:scale(0.97); }
+.btn-primary { background:var(--primary);color:#fff;width:100%;justify-content:center;box-shadow:0 4px 16px rgba(26,35,126,0.3); }
+.btn-danger { background:var(--red);color:#fff; }
+.btn-sm { padding:8px 14px;font-size:12px;border-radius:8px; }
+.tab-bar { display:flex;background:#f5f5f5;border-radius:var(--radius-sm);padding:3px;margin-bottom:14px; }
+.tab { flex:1;padding:8px 4px;border:none;background:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.2s; }
+.tab.active { background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.3s; }
+.modal-overlay.open { opacity:1;pointer-events:all; }
+.modal { background:#fff;width:100%;border-radius:24px 24px 0 0;padding:20px 16px 36px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(.32,.72,0,1); }
+.modal-overlay.open .modal { transform:translateY(0); }
+.modal-title { font-size:17px;font-weight:700;margin-bottom:18px;color:var(--primary);display:flex;align-items:center;gap:8px; }
+.modal-close { margin-left:auto;background:#f0f0f0;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center; }
+.toast { position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:#323232;color:#fff;padding:12px 20px;border-radius:24px;font-size:13px;font-weight:500;z-index:200;transition:transform 0.3s ease;white-space:nowrap;max-width:calc(100vw - 40px);text-align:center; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--red); }
+.empty { text-align:center;padding:40px 20px;color:var(--text-muted); }
+.empty .empty-icon { font-size:48px;margin-bottom:12px; }
+.empty p { font-size:14px; }
+.fab { position:fixed;right:18px;bottom:76px;width:54px;height:54px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.2s; }
+.fab:active { transform:scale(0.93); }
+.fab.hidden { display:none; }
+.summary-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border); }
+.summary-row:last-child { border-bottom:none; }
+.summary-label { font-size:13px;color:var(--text-muted); }
+.summary-val { font-size:14px;font-weight:700; }
+.page::-webkit-scrollbar { width:4px; }
+.page::-webkit-scrollbar-thumb { background:rgba(26,35,126,0.2);border-radius:4px; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.animate-up { animation:slideUp 0.3s ease both; }
+.animate-up:nth-child(1){animation-delay:0s} .animate-up:nth-child(2){animation-delay:0.05s} .animate-up:nth-child(3){animation-delay:0.1s} .animate-up:nth-child(4){animation-delay:0.15s} .animate-up:nth-child(5){animation-delay:0.2s} .animate-up:nth-child(6){animation-delay:0.25s}
+
+/* ── USER MANAGEMENT ── */
+.user-card { background:var(--card);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--shadow); }
+.user-card-header { display:flex;align-items:center;gap:12px; }
+.user-avatar-lg { width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden; }
+.user-avatar-lg img { width:100%;height:100%;object-fit:cover; }
+.user-info { flex:1;min-width:0; }
+.user-name { font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.user-email { font-size:11px;color:var(--text-muted);margin-top:2px; }
+.role-badge { display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-top:6px; }
+.role-admin { background:#e8eaf6;color:var(--primary); }
+.role-editor { background:var(--green-light);color:var(--green); }
+.role-viewer { background:var(--orange-light);color:var(--orange); }
+.role-custom { background:var(--purple-light);color:var(--purple); }
+.access-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px; }
+.access-item { display:flex;align-items:center;gap:6px;padding:6px 10px;background:#f5f5f5;border-radius:8px;font-size:12px;font-weight:500; }
+.access-item input[type=checkbox] { width:16px;height:16px;accent-color:var(--primary); }
+.profile-dropdown { position:fixed;top:70px;right:12px;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);z-index:50;min-width:200px;overflow:hidden;display:none; }
+.profile-dropdown.open { display:block;animation:fadeIn 0.2s ease; }
+.pd-header { background:linear-gradient(135deg,var(--primary),var(--primary-light));padding:16px;color:#fff; }
+.pd-name { font-size:15px;font-weight:700; }
+.pd-email { font-size:11px;opacity:0.75;margin-top:2px; }
+.pd-role { font-size:11px;background:rgba(255,255,255,0.2);border-radius:20px;padding:2px 8px;display:inline-block;margin-top:6px; }
+.pd-item { display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.2s; }
+.pd-item:hover { background:#f5f5f5; }
+.pd-item:last-child { border-bottom:none; }
+.pd-item .pd-icon { font-size:18px; }
+.pd-item.danger { color:var(--red); }
+.install-banner { background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px;cursor:pointer;animation:slideUp 0.4s ease; }
+.install-banner .ib-icon { font-size:28px; }
+.install-banner .ib-text h3 { font-size:14px;font-weight:700; }
+.install-banner .ib-text p { font-size:11px;opacity:0.8;margin-top:2px; }
+.install-banner .ib-arrow { margin-left:auto;font-size:20px;opacity:0.7; }
+.routine-locked { text-align:center;padding:30px 20px;color:var(--text-muted); }
+.routine-locked .lock-icon { font-size:40px;margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="logo">🇧🇩</div>
+  <h1>জাহাঙ্গীর সিস্টেম<br>v7 Final</h1>
+  <p>Secure auth · PWA offline · scalable architecture</p>
+  <div class="bar"><div class="bar-fill"></div></div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon">🇧🇩</div>
+      <h1>জাহাঙ্গীর সিস্টেম</h1>
+      <p>নিরাপদ backend-ready আর্থিক সমাধান</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="loginTabSwitch('signin',this)">সাইন ইন</button>
+      <button class="login-tab" onclick="loginTabSwitch('signup',this)">নতুন অ্যাকাউন্ট</button>
+    </div>
+
+    <div id="loginError" class="login-error"></div>
+
+    <!-- SIGN IN -->
+    <div id="signinForm">
+      <div class="login-field">
+        <label>ইমেইল</label>
+        <input type="email" id="siEmail" placeholder="আপনার ইমেইল লিখুন">
+      </div>
+      <div class="login-field">
+        <label>পাসওয়ার্ড</label>
+        <input type="password" id="siPass" placeholder="পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter')doSignIn()">
+      </div>
+      <button class="login-btn" onclick="doSignIn()">🔓 লগইন করুন</button>
+
+      <div class="login-divider">অথবা</div>
+
+      <button class="google-btn" onclick="doGoogleSignIn()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Google দিয়ে সাইন ইন (OAuth)
+      </button>
+    </div>
+
+    <!-- SIGN UP -->
+    <div id="signupForm" style="display:none">
+      <div class="login-field">
+        <label>আপনার নাম</label>
+        <input type="text" id="suName" placeholder="পূর্ণ নাম লিখুন">
+      </div>
+      <div class="login-field">
+        <label>ইমেইল</label>
+        <input type="email" id="suEmail" placeholder="আপনার ইমেইল লিখুন">
+      </div>
+      <div class="login-field">
+        <label>পাসওয়ার্ড</label>
+        <input type="password" id="suPass" placeholder="কমপক্ষে ৬ অক্ষর">
+      </div>
+      <div class="login-field">
+        <label>পাসওয়ার্ড নিশ্চিত করুন</label>
+        <input type="password" id="suPass2" placeholder="পাসওয়ার্ড আবার লিখুন" onkeydown="if(event.key==='Enter')doSignUp()">
+      </div>
+      <button class="login-btn" onclick="doSignUp()">✅ অ্যাকাউন্ট তৈরি করুন</button>
+
+      <div class="login-divider">অথবা</div>
+
+      <button class="google-btn" onclick="doGoogleSignIn()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Google দিয়ে সাইন আপ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE DROPDOWN -->
+<div class="profile-dropdown" id="profileDropdown">
+  <div class="pd-header">
+    <div class="pd-name" id="pdName">লোড হচ্ছে...</div>
+    <div class="pd-email" id="pdEmail"></div>
+    <div class="pd-role" id="pdRole"></div>
+  </div>
+  <div class="pd-item" onclick="navigate('settings',document.querySelectorAll('.nav-item')[5]);closeProfileDropdown()">
+    <span class="pd-icon">⚙️</span> সেটিংস
+  </div>
+  <div class="pd-item" onclick="navigate('users',null);closeProfileDropdown()" id="pdUsersLink" style="display:none">
+    <span class="pd-icon">👥</span> ব্যবহারকারী ব্যবস্থাপনা
+  </div>
+  <div class="pd-item" onclick="changePassword()">
+    <span class="pd-icon">🔑</span> পাসওয়ার্ড পরিবর্তন
+  </div>
+  <div class="pd-item danger" onclick="doSignOut()">
+    <span class="pd-icon">🚪</span> লগআউট
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <div class="header">
+    <div class="header-left">
+      <span class="header-icon">🇧🇩</span>
+      <div>
+        <div class="header-title">জাহাঙ্গীর সিস্টেম</div>
+        <div class="header-sub" id="headerSub">মূল ড্যাশবোর্ড</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="header-date" id="headerDate"></div>
+      <div class="user-avatar" id="userAvatar" onclick="toggleProfileDropdown()">
+        <span id="userAvatarText">?</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pages">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="installBanner" class="install-banner" onclick="installApp()" style="display:none">
+        <div class="ib-icon">📲</div>
+        <div class="ib-text"><h3>হোম স্ক্রিনে ইনস্টল করুন</h3><p>অফলাইনেও কাজ করবে</p></div>
+        <div class="ib-arrow">›</div>
+      </div>
+      <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-card kpi-income animate-up"><div class="kpi-label">📈 মোট আয়</div><div class="kpi-value" id="kpi-income">৳০</div><div class="kpi-unit">এই মাসে</div></div>
+        <div class="kpi-card kpi-expense animate-up"><div class="kpi-label">📉 মোট ব্যয়</div><div class="kpi-value" id="kpi-expense">৳০</div><div class="kpi-unit">এই মাসে</div></div>
+        <div class="kpi-card kpi-net animate-up"><div class="kpi-label">💵 নিট ক্যাশফ্লো</div><div class="kpi-value" id="kpi-net">৳০</div><div class="kpi-unit">আয় − ব্যয়</div></div>
+        <div class="kpi-card kpi-debt animate-up"><div class="kpi-label">🔴 বকেয়া ঋণ</div><div class="kpi-value" id="kpi-debt">৳০</div><div class="kpi-unit">মোট বকেয়া</div></div>
+        <div class="kpi-card kpi-goat animate-up"><div class="kpi-label">🐐 ছাগল নিট</div><div class="kpi-value" id="kpi-goat">৳০</div><div class="kpi-unit">খামার লাভ</div></div>
+        <div class="kpi-card kpi-tea animate-up"><div class="kpi-label">🍃 চা বাগান নিট</div><div class="kpi-value" id="kpi-tea">৳০</div><div class="kpi-unit">বাগান লাভ</div></div>
+      </div>
+      <div id="customBizKpi"></div>
+      <div class="card"><div class="card-title"><span class="icon">🕒</span> সাম্প্রতিক লেনদেন</div><div id="recentTx"><div class="empty"><div class="empty-icon">📭</div><p>কোনো লেনদেন নেই</p></div></div></div>
+      <div class="card"><div class="card-title"><span class="icon">🧾</span> সক্রিয় ঋণ</div><div id="debtSummary"><div class="empty"><div class="empty-icon">✅</div><p>কোনো সক্রিয় ঋণ নেই</p></div></div></div>
+      <div class="card"><div class="card-title"><span class="icon">📱</span> WhatsApp রিপোর্ট</div><div class="wa-grid"><button class="wa-btn" onclick="sendWA('daily')"><span class="wa-icon">📊</span>দৈনিক</button><button class="wa-btn" onclick="sendWA('debt')"><span class="wa-icon">💳</span>ঋণ</button><button class="wa-btn" onclick="sendWA('personal')"><span class="wa-icon">🤝</span>ব্যক্তিগত</button><button class="wa-btn" onclick="sendWA('monthly')"><span class="wa-icon">📅</span>মাসিক</button></div></div>
+      <div class="card"><div class="card-title"><span class="icon">🕋</span> আজকের রুটিন স্ট্যাটাস</div><div id="routineSnap"></div></div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="page" id="page-tx">
+      <div class="tab-bar"><button class="tab active" onclick="txTab('all',this)">সব</button><button class="tab" onclick="txTab('আয়',this)">আয় 📈</button><button class="tab" onclick="txTab('ব্যয়',this)">ব্যয় 📉</button></div>
+      <div id="txList"></div>
+    </div>
+
+    <!-- DEBT -->
+    <div class="page" id="page-debt">
+      <div class="tab-bar"><button class="tab active" onclick="debtTab('debt',this)">🧾 ঋণ</button><button class="tab" onclick="debtTab('personal',this)">🤝 ব্যক্তিগত</button><button class="tab" onclick="debtTab('office',this)">🏢 অফিস</button></div>
+      <div id="debtContent"></div>
+    </div>
+
+    <!-- BUSINESS -->
+    <div class="page" id="page-biz">
+      <div id="bizTabBar" class="tab-bar" style="flex-wrap:wrap;gap:4px"></div>
+      <div id="bizContent"></div>
+    </div>
+
+    <!-- LIFE -->
+    <div class="page" id="page-life">
+      <div class="tab-bar"><button class="tab active" onclick="lifeTab('clock',this)">⏰ জীবন-ঘড়ি</button><button class="tab" onclick="lifeTab('routine',this)">🕋 রুটিন</button><button class="tab" onclick="lifeTab('planner',this)">🗂️ টুডু & মিটিং</button></div>
+      <div id="lifeContent"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="card" id="profileCard">
+        <div class="card-title"><span class="icon">👤</span> আমার প্রোফাইল</div>
+        <div id="myProfileInfo"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">⚙️</span> সেটিংস</div>
+        <div class="form-group"><label class="form-label">আপনার নাম</label><input class="form-input" id="set-name" placeholder="জাহাঙ্গীর"></div>
+        <div class="form-group"><label class="form-label">WhatsApp নম্বর</label><input class="form-input" id="set-phone" placeholder="8801712345678" type="tel"></div>
+        <div class="form-group"><label class="form-label">মাসিক বাজেট সীমা (৳)</label><input class="form-input" id="set-budget" placeholder="30000" type="number"></div>
+        <div class="form-group"><label class="form-label">ঋণ সতর্কতা সীমা (৳)</label><input class="form-input" id="set-debt-limit" placeholder="100000" type="number"></div>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 সেটিংস সংরক্ষণ করুন</button>
+      </div>
+      <div class="card"><div class="card-title"><span class="icon">📊</span> ডেটা ব্যবস্থাপনা</div>
+        <button class="btn btn-primary" onclick="askPw('demo')" style="margin-bottom:10px">🎭 ডেমো ডেটা লোড করুন</button>
+        <button class="btn" style="background:#e53935;color:#fff;width:100%;justify-content:center;margin-top:4px" onclick="askPw('clear')">🗑️ সব ডেটা মুছুন</button>
+      </div>
+      <div class="card"><div class="card-title"><span class="icon">ℹ️</span> অ্যাপ সম্পর্কে</div>
+        <div class="summary-row"><span class="summary-label">সংস্করণ</span><span class="summary-val">৩.০.০ (v7 Pro)</span></div>
+        <div class="summary-row"><span class="summary-label">লগইন</span><span class="summary-val badge badge-green">✅ সক্রিয়</span></div>
+        <div class="summary-row"><span class="summary-label">অফলাইন সাপোর্ট</span><span class="summary-val badge badge-green">✅ সক্রিয়</span></div>
+      </div>
+    </div>
+
+    <!-- USERS PAGE (admin only) -->
+    <div class="page" id="page-users">
+      <div class="card">
+        <div class="card-title"><span class="icon">👥</span> ব্যবহারকারী ব্যবস্থাপনা</div>
+        <button class="btn btn-primary" style="margin-bottom:14px" onclick="openAddUserModal()">➕ নতুন ব্যবহারকারী যোগ করুন</button>
+        <div id="usersList"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="card-title"><span class="icon">🔐</span> ভূমিকা (Role) বিবরণ</div>
+        <div style="margin-bottom:8px"><span class="role-badge role-admin">👑 অ্যাডমিন</span><p style="font-size:12px;color:var(--text-muted);margin-top:4px">সব কিছুতে পূর্ণ অ্যাক্সেস। অন্য ব্যবহারকারী তৈরি ও মুছতে পারবেন।</p></div>
+        <div style="margin-bottom:8px"><span class="role-badge role-editor">✏️ এডিটর</span><p style="font-size:12px;color:var(--text-muted);margin-top:4px">ডেটা দেখতে ও যোগ/সম্পাদনা করতে পারবেন।</p></div>
+        <div style="margin-bottom:8px"><span class="role-badge role-viewer">👁️ ভিউয়ার</span><p style="font-size:12px;color:var(--text-muted);margin-top:4px">শুধু দেখতে পারবেন, কোনো পরিবর্তন করতে পারবেন না।</p></div>
+        <div><span class="role-badge role-custom">⚡ কাস্টম</span><p style="font-size:12px;color:var(--text-muted);margin-top:4px">নির্দিষ্ট মডিউলে নির্দিষ্ট অ্যাক্সেস।</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav" id="bottomNav">
+    <button class="nav-item active" onclick="navigate('dashboard',this)"><span class="nav-icon">🎛️</span><span>ড্যাশবোর্ড</span></button>
+    <button class="nav-item" onclick="navigate('tx',this)"><span class="nav-icon">📥</span><span>লেনদেন</span></button>
+    <button class="nav-item" onclick="navigate('debt',this)"><span class="nav-icon">🧾</span><span>ঋণ</span></button>
+    <button class="nav-item" onclick="navigate('biz',this)"><span class="nav-icon">🏭</span><span>ব্যবসা</span></button>
+    <button class="nav-item" onclick="navigate('life',this)"><span class="nav-icon">⏰</span><span>জীবন</span></button>
+    <button class="nav-item" onclick="navigate('settings',this)"><span class="nav-icon">⚙️</span><span>সেটিংস</span></button>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="openAddModal()">＋</button>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title"><span id="modalIcon">➕</span><span id="modalTitleText">নতুন লেনদেন</span><button class="modal-close" onclick="closeModal('addModal')">✕</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-overlay" id="cpModal">
+  <div class="modal">
+    <div class="modal-title"><span>🔑</span> পাসওয়ার্ড পরিবর্তন <button class="modal-close" onclick="closeModal('cpModal')">✕</button></div>
+    <div class="form-group"><label class="form-label">বর্তমান পাসওয়ার্ড</label><input class="form-input" id="cp-old" type="password" placeholder="বর্তমান পাসওয়ার্ড"></div>
+    <div class="form-group"><label class="form-label">নতুন পাসওয়ার্ড</label><input class="form-input" id="cp-new" type="password" placeholder="কমপক্ষে ৬ অক্ষর"></div>
+    <div class="form-group"><label class="form-label">নিশ্চিত করুন</label><input class="form-input" id="cp-new2" type="password" placeholder="পুনরায় লিখুন"></div>
+    <button class="btn btn-primary" onclick="doChangePassword()">✅ পাসওয়ার্ড পরিবর্তন করুন</button>
+  </div>
+</div>
+
+<!-- PASSWORD CONFIRM MODAL -->
+<div class="modal-overlay" id="pwModal">
+  <div class="modal">
+    <div class="modal-title"><span id="pwModalIcon">🔒</span><span id="pwModalTitle">নিরাপত্তা যাচাই</span><button class="modal-close" onclick="closeModal('pwModal')">✕</button></div>
+    <div style="background:#fff3e0;border-radius:10px;padding:12px 14px;margin-bottom:14px;border-left:4px solid var(--orange)">
+      <div style="font-size:13px;color:var(--orange);font-weight:600">⚠️ সতর্কতা</div>
+      <div id="pwModalWarn" style="font-size:12px;color:var(--text-muted);margin-top:4px"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">🔑 নিরাপত্তা পাসওয়ার্ড</label>
+      <input class="form-input" id="pwInput" type="password" placeholder="পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter')confirmPwAction()">
+    </div>
+    <button class="btn btn-primary" id="pwConfirmBtn" onclick="confirmPwAction()">✅ নিশ্চিত করুন</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// AUTH SYSTEM
+// ═══════════════════════════════════════════════════════════
+window.APP_CONFIG = {
+  API_BASE_URL: '/api',
+  USE_BACKEND_AUTH: true,
+  USE_OAUTH_REDIRECT: true,
+  APP_NAME: 'জাহাঙ্গীর সিস্টেম v7'
+};
+
+const AUTH = {
+  // Store all users in localStorage (in production, use a real backend)
+  getUsers: () => { try { return JSON.parse(localStorage.getItem('zs_users')) || []; } catch { return []; } },
+  setUsers: (u) => localStorage.setItem('zs_users', JSON.stringify(u)),
+  getCurrentUser: () => { try { return JSON.parse(localStorage.getItem('zs_current_user')) || null; } catch { return null; } },
+  setCurrentUser: (u) => u ? localStorage.setItem('zs_current_user', JSON.stringify(u)) : localStorage.removeItem('zs_current_user'),
+
+  // Default admin (first user created is admin)
+  ensureDefaultAdmin() {
+    const users = this.getUsers();
+    if (!users.length) {
+      const admin = {
+        id: 'admin_' + Date.now(),
+        name: 'জাহাঙ্গীর (অ্যাডমিন)',
+        email: 'admin@jahangir.com',
+        password: this.hash('admin123'),
+        role: 'admin',
+        access: { dashboard:true, tx:true, debt:true, biz:true, life:true, settings:true, users:true },
+        avatar: null,
+        createdAt: new Date().toISOString(),
+        provider: 'email',
+      };
+      this.setUsers([admin]);
+    }
+  },
+
+  hash(str) {
+    // Simple hash for demo (use bcrypt in production)
+    let h = 0;
+    for (let c of str) h = ((h << 5) - h) + c.charCodeAt(0), h |= 0;
+    return 'h_' + Math.abs(h).toString(36) + '_' + str.length;
+  },
+
+  signIn(email, password) {
+    const users = this.getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) return { ok:false, msg:'ইমেইল খুঁজে পাওয়া যায়নি' };
+    if (user.provider === 'google') return { ok:false, msg:'এই অ্যাকাউন্টটি Google দিয়ে তৈরি। Google দিয়ে লগইন করুন।' };
+    if (user.password !== this.hash(password)) return { ok:false, msg:'পাসওয়ার্ড ভুল' };
+    this.setCurrentUser(user);
+    return { ok:true, user };
+  },
+
+  signUp(name, email, password) {
+    const users = this.getUsers();
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) return { ok:false, msg:'এই ইমেইলে ইতোমধ্যে অ্যাকাউন্ট আছে' };
+    if (password.length < 6) return { ok:false, msg:'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে' };
+    const isFirst = users.length === 0;
+    const user = {
+      id: 'u_' + Date.now(),
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password: this.hash(password),
+      role: isFirst ? 'admin' : 'viewer',
+      access: isFirst
+        ? { dashboard:true, tx:true, debt:true, biz:true, life:true, settings:true, users:true }
+        : { dashboard:true, tx:false, debt:false, biz:false, life:false, settings:false, users:false },
+      avatar: null,
+      createdAt: new Date().toISOString(),
+      provider: 'email',
+    };
+    users.push(user);
+    this.setUsers(users);
+    this.setCurrentUser(user);
+    return { ok:true, user };
+  },
+
+  googleSignIn(profile) {
+    const users = this.getUsers();
+    let user = users.find(u => u.email.toLowerCase() === profile.email.toLowerCase());
+    if (!user) {
+      const isFirst = users.length === 0;
+      user = {
+        id: 'g_' + Date.now(),
+        name: profile.name,
+        email: profile.email.toLowerCase(),
+        password: null,
+        role: isFirst ? 'admin' : 'viewer',
+        access: isFirst
+          ? { dashboard:true, tx:true, debt:true, biz:true, life:true, settings:true, users:true }
+          : { dashboard:true, tx:false, debt:false, biz:false, life:false, settings:false, users:false },
+        avatar: profile.picture || null,
+        createdAt: new Date().toISOString(),
+        provider: 'google',
+      };
+      users.push(user);
+      this.setUsers(users);
+    } else {
+      // Update avatar
+      if (profile.picture) { user.avatar = profile.picture; const idx = users.findIndex(u=>u.id===user.id); users[idx]=user; this.setUsers(users); }
+    }
+    this.setCurrentUser(user);
+    return { ok:true, user };
+  },
+
+  signOut() { this.setCurrentUser(null); },
+
+  changePassword(oldPass, newPass) {
+    const cu = this.getCurrentUser();
+    if (!cu) return { ok:false, msg:'লগইন করুন' };
+    if (cu.provider === 'google') return { ok:false, msg:'Google অ্যাকাউন্টে পাসওয়ার্ড পরিবর্তন করা যাবে না' };
+    const users = this.getUsers();
+    const user = users.find(u=>u.id===cu.id);
+    if (!user) return { ok:false, msg:'ব্যবহারকারী খুঁজে পাওয়া যায়নি' };
+    if (user.password !== this.hash(oldPass)) return { ok:false, msg:'বর্তমান পাসওয়ার্ড ভুল' };
+    if (newPass.length < 6) return { ok:false, msg:'নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে' };
+    user.password = this.hash(newPass);
+    this.setUsers(users);
+    this.setCurrentUser(user);
+    return { ok:true };
+  },
+
+  canAccess(module) {
+    const cu = this.getCurrentUser();
+    if (!cu) return false;
+    if (cu.role === 'admin') return true;
+    if (cu.role === 'editor') return module !== 'users';
+    if (cu.role === 'viewer') return module === 'dashboard';
+    return cu.access && cu.access[module];
+  },
+
+  canEdit() {
+    const cu = this.getCurrentUser();
+    if (!cu) return false;
+    return cu.role === 'admin' || cu.role === 'editor';
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+// DATA STORE (per-user localStorage namespace)
+// ═══════════════════════════════════════════════════════════
+const DB = {
+  ns: () => { const cu = AUTH.getCurrentUser(); return cu ? 'zs_' + cu.id + '_' : 'zs_guest_'; },
+  get: (key, def=[]) => { try { return JSON.parse(localStorage.getItem(DB.ns()+key)) ?? def; } catch { return def; } },
+  set: (key, val) => localStorage.setItem(DB.ns()+key, JSON.stringify(val)),
+  settings: () => DB.get('settings', { name:'জাহাঙ্গীর', phone:'8801712345678', budget:30000, debtLimit:100000 }),
+};
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+const fmt = n => '৳' + Number(n||0).toLocaleString('en-IN');
+const fmtDate = d => new Date(d).toLocaleDateString('bn-BD',{day:'2-digit',month:'short',year:'numeric'});
+const today = () => new Date().toISOString().split('T')[0];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+const monthCode = () => new Date().toISOString().slice(0,7);
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2800);
+}
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOGIN UI
+// ═══════════════════════════════════════════════════════════
+function loginTabSwitch(tab, el) {
+  document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('signinForm').style.display = tab==='signin'?'block':'none';
+  document.getElementById('signupForm').style.display = tab==='signup'?'block':'none';
+  document.getElementById('loginError').classList.remove('show');
+}
+
+async function doSignIn() {
+  const email = document.getElementById('siEmail').value.trim();
+  const pass = document.getElementById('siPass').value;
+  if (!email || !pass) { showLoginError('ইমেইল ও পাসওয়ার্ড লিখুন'); return; }
+
+  if (window.APP_CONFIG?.USE_BACKEND_AUTH) {
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password: pass })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data?.token) localStorage.setItem('zs_session_token', data.token);
+        if (data?.user) {
+          AUTH.setCurrentUser(data.user);
+          AUTH.setUsers([...AUTH.getUsers().filter(u => u.id !== data.user.id), data.user]);
+          onLoginSuccess(data.user);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend auth unavailable, falling back to local demo auth.', err);
+    }
+  }
+
+  const res = AUTH.signIn(email, pass);
+  if (!res.ok) { showLoginError(res.msg); return; }
+  onLoginSuccess(res.user);
+}
+
+async function doSignUp() {
+  const name = document.getElementById('suName').value.trim();
+  const email = document.getElementById('suEmail').value.trim();
+  const pass = document.getElementById('suPass').value;
+  const pass2 = document.getElementById('suPass2').value;
+  if (!name || !email || !pass) { showLoginError('সব তথ্য পূরণ করুন'); return; }
+  if (pass !== pass2) { showLoginError('পাসওয়ার্ড মেলেনি'); return; }
+
+  if (window.APP_CONFIG?.USE_BACKEND_AUTH) {
+    try {
+      const resp = await fetch(`${window.APP_CONFIG.API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, email, password: pass })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data?.token) localStorage.setItem('zs_session_token', data.token);
+        if (data?.user) {
+          AUTH.setCurrentUser(data.user);
+          AUTH.setUsers([...AUTH.getUsers().filter(u => u.id !== data.user.id), data.user]);
+          onLoginSuccess(data.user);
+          return;
+        }
+      } else {
+        const err = await resp.json().catch(() => ({}));
+        if (err?.message) showLoginError(err.message);
+      }
+    } catch (err) {
+      console.warn('Backend register unavailable, falling back to local demo auth.', err);
+    }
+  }
+
+  const res = AUTH.signUp(name, email, pass);
+  if (!res.ok) { showLoginError(res.msg); return; }
+  onLoginSuccess(res.user);
+}
+
+async function doGoogleSignIn() {
+  if (window.APP_CONFIG?.USE_OAUTH_REDIRECT) {
+    try {
+      const url = `${window.APP_CONFIG.API_BASE_URL}/auth/google`;
+      window.location.href = url;
+      return;
+    } catch (err) {
+      console.warn('OAuth redirect unavailable, using demo flow.', err);
+    }
+  }
+
+  // Demo fallback for local testing
+  const email = prompt('Google ইমেইল লিখুন (Demo মোড):');
+  if (!email || !email.includes('@')) { showLoginError('সঠিক ইমেইল লিখুন'); return; }
+  const name = email.split('@')[0].replace(/[^a-z0-9]/gi, ' ');
+  const profile = { email, name: name.charAt(0).toUpperCase() + name.slice(1), picture: null };
+  const res = AUTH.googleSignIn(profile);
+  if (!res.ok) { showLoginError(res.msg); return; }
+  onLoginSuccess(res.user);
+}
+
+function onLoginSuccess(user) {
+  document.getElementById('loginScreen').classList.remove('show');
+  document.getElementById('app').style.display = 'flex';
+  setupUserUI(user);
+  updateHeaderForRole();
+  renderDashboard();
+  showToast(`✅ স্বাগতম, ${user.name}!`, 'success');
+}
+
+function setupUserUI(user) {
+  // Avatar
+  const av = document.getElementById('userAvatar');
+  const avText = document.getElementById('userAvatarText');
+  if (user.avatar) {
+    av.innerHTML = `<img src="${user.avatar}" onerror="this.style.display='none'">`;
+  } else {
+    avText.textContent = user.name.charAt(0).toUpperCase();
+  }
+  // Profile dropdown
+  document.getElementById('pdName').textContent = user.name;
+  document.getElementById('pdEmail').textContent = user.email;
+  const roles = { admin:'👑 অ্যাডমিন', editor:'✏️ এডিটর', viewer:'👁️ ভিউয়ার', custom:'⚡ কাস্টম' };
+  document.getElementById('pdRole').textContent = roles[user.role] || user.role;
+  document.getElementById('pdUsersLink').style.display = user.role==='admin'?'flex':'none';
+
+  // Settings profile
+  const mpi = document.getElementById('myProfileInfo');
+  mpi.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div class="user-avatar-lg">${user.avatar?`<img src="${user.avatar}">`:(user.name.charAt(0).toUpperCase())}</div>
+      <div>
+        <div style="font-size:16px;font-weight:700">${user.name}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${user.email}</div>
+        <span class="role-badge role-${user.role}">${roles[user.role]||user.role}</span>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted)">প্রদানকারী: ${user.provider==='google'?'🌐 Google':'📧 Email'} · যোগদান: ${fmtDate(user.createdAt)}</div>`;
+}
+
+function doSignOut() {
+  if (!confirm('লগআউট করবেন?')) return;
+  AUTH.signOut();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').classList.add('show');
+  document.getElementById('siEmail').value = '';
+  document.getElementById('siPass').value = '';
+  closeProfileDropdown();
+}
+
+function toggleProfileDropdown() {
+  document.getElementById('profileDropdown').classList.toggle('open');
+}
+function closeProfileDropdown() {
+  document.getElementById('profileDropdown').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#userAvatar') && !e.target.closest('#profileDropdown')) closeProfileDropdown();
+});
+
+function changePassword() {
+  closeProfileDropdown();
+  document.getElementById('addModal').classList.remove('open');
+  document.getElementById('cpModal').classList.add('open');
+}
+function doChangePassword() {
+  const old = document.getElementById('cp-old').value;
+  const n1 = document.getElementById('cp-new').value;
+  const n2 = document.getElementById('cp-new2').value;
+  if (n1 !== n2) { showToast('⚠️ নতুন পাসওয়ার্ড মেলেনি', 'error'); return; }
+  const res = AUTH.changePassword(old, n1);
+  if (!res.ok) { showToast('⚠️ ' + res.msg, 'error'); return; }
+  closeModal('cpModal');
+  showToast('✅ পাসওয়ার্ড পরিবর্তন হয়েছে!', 'success');
+}
+
+// ═══════════════════════════════════════════════════════════
+// USER MANAGEMENT (Admin Only)
+// ═══════════════════════════════════════════════════════════
+function renderUsersList() {
+  const users = AUTH.getUsers();
+  const cu = AUTH.getCurrentUser();
+  const el = document.getElementById('usersList');
+  if (!users.length) { el.innerHTML = '<div class="empty"><p>কোনো ব্যবহারকারী নেই</p></div>'; return; }
+
+  const roleLabels = { admin:'👑 অ্যাডমিন', editor:'✏️ এডিটর', viewer:'👁️ ভিউয়ার', custom:'⚡ কাস্টম' };
+  const moduleLabels = { dashboard:'ড্যাশবোর্ড', tx:'লেনদেন', debt:'ঋণ', biz:'ব্যবসা', life:'জীবন', settings:'সেটিংস', users:'ব্যবহারকারী' };
+
+  el.innerHTML = users.map(u => `
+    <div class="user-card" style="margin-bottom:12px">
+      <div class="user-card-header">
+        <div class="user-avatar-lg">${u.avatar?`<img src="${u.avatar}">`:(u.name.charAt(0))}</div>
+        <div class="user-info">
+          <div class="user-name">${u.name} ${u.id===cu.id?'<span style="font-size:10px;color:var(--text-muted)">(আমি)</span>':''}</div>
+          <div class="user-email">${u.email}</div>
+          <span class="role-badge role-${u.role}">${roleLabels[u.role]||u.role}</span>
+        </div>
+        ${u.id !== cu.id ? `<button onclick="deleteUser('${u.id}')" style="background:#ffebee;border:none;color:var(--red);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px">🗑️</button>` : ''}
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px">ভূমিকা পরিবর্তন:</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+          ${['admin','editor','viewer','custom'].map(r => `<button onclick="changeUserRole('${u.id}','${r}')" style="padding:5px 12px;border-radius:20px;border:2px solid ${u.role===r?'var(--primary)':'var(--border)'};background:${u.role===r?'var(--primary)':'#fff'};color:${u.role===r?'#fff':'var(--text)'};font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">${roleLabels[r]}</button>`).join('')}
+        </div>
+        ${u.role==='custom'?`
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px">মডিউল অ্যাক্সেস:</div>
+        <div class="access-grid">
+          ${Object.entries(moduleLabels).map(([k,label])=>`
+            <label class="access-item">
+              <input type="checkbox" ${u.access&&u.access[k]?'checked':''} onchange="toggleAccess('${u.id}','${k}',this.checked)">
+              ${label}
+            </label>`).join('')}
+        </div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function changeUserRole(userId, newRole) {
+  const users = AUTH.getUsers();
+  const user = users.find(u=>u.id===userId);
+  if (!user) return;
+  user.role = newRole;
+  if (newRole === 'admin') user.access = { dashboard:true,tx:true,debt:true,biz:true,life:true,settings:true,users:true };
+  else if (newRole === 'editor') user.access = { dashboard:true,tx:true,debt:true,biz:true,life:true,settings:true,users:false };
+  else if (newRole === 'viewer') user.access = { dashboard:true,tx:false,debt:false,biz:false,life:false,settings:false,users:false };
+  AUTH.setUsers(users);
+  renderUsersList();
+  showToast(`✅ ${user.name}-এর ভূমিকা পরিবর্তন হয়েছে`, 'success');
+}
+
+function toggleAccess(userId, module, val) {
+  const users = AUTH.getUsers();
+  const user = users.find(u=>u.id===userId);
+  if (!user) return;
+  if (!user.access) user.access = {};
+  user.access[module] = val;
+  AUTH.setUsers(users);
+  showToast('✅ অ্যাক্সেস আপডেট হয়েছে');
+}
+
+function deleteUser(userId) {
+  if (!confirm('এই ব্যবহারকারী মুছবেন?')) return;
+  AUTH.setUsers(AUTH.getUsers().filter(u=>u.id!==userId));
+  renderUsersList();
+  showToast('✅ মুছে ফেলা হয়েছে');
+}
+
+function openAddUserModal() {
+  document.getElementById('modalIcon').textContent = '👤';
+  document.getElementById('modalTitleText').textContent = 'নতুন ব্যবহারকারী';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">নাম</label><input class="form-input" id="nu-name" placeholder="পূর্ণ নাম"></div>
+    <div class="form-group"><label class="form-label">ইমেইল</label><input class="form-input" id="nu-email" type="email" placeholder="ইমেইল ঠিকানা"></div>
+    <div class="form-group"><label class="form-label">প্রাথমিক পাসওয়ার্ড</label><input class="form-input" id="nu-pass" type="password" placeholder="কমপক্ষে ৬ অক্ষর"></div>
+    <div class="form-group"><label class="form-label">ভূমিকা</label>
+      <select class="form-select" id="nu-role">
+        <option value="viewer">👁️ ভিউয়ার (শুধু দেখতে পারবে)</option>
+        <option value="editor">✏️ এডিটর (দেখতে ও সম্পাদনা করতে পারবে)</option>
+        <option value="admin">👑 অ্যাডমিন (সব কিছু)</option>
+        <option value="custom">⚡ কাস্টম (নির্দিষ্ট মডিউল)</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="saveNewUser()">✅ ব্যবহারকারী তৈরি করুন</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+
+function saveNewUser() {
+  const name = document.getElementById('nu-name').value.trim();
+  const email = document.getElementById('nu-email').value.trim();
+  const pass = document.getElementById('nu-pass').value;
+  const role = document.getElementById('nu-role').value;
+  if (!name || !email || !pass) { showToast('⚠️ সব তথ্য পূরণ করুন', 'error'); return; }
+  if (pass.length < 6) { showToast('⚠️ পাসওয়ার্ড কমপক্ষে ৬ অক্ষর', 'error'); return; }
+  const users = AUTH.getUsers();
+  if (users.find(u=>u.email.toLowerCase()===email.toLowerCase())) { showToast('⚠️ এই ইমেইলে ইতোমধ্যে অ্যাকাউন্ট আছে', 'error'); return; }
+  const acc = role==='admin'?{dashboard:true,tx:true,debt:true,biz:true,life:true,settings:true,users:true}
+    :role==='editor'?{dashboard:true,tx:true,debt:true,biz:true,life:true,settings:true,users:false}
+    :role==='viewer'?{dashboard:true,tx:false,debt:false,biz:false,life:false,settings:false,users:false}
+    :{dashboard:true,tx:false,debt:false,biz:false,life:false,settings:false,users:false};
+  const user = { id:'u_'+uid(), name, email:email.toLowerCase(), password:AUTH.hash(pass), role, access:acc, avatar:null, createdAt:new Date().toISOString(), provider:'email' };
+  users.push(user);
+  AUTH.setUsers(users);
+  closeModal('addModal');
+  renderUsersList();
+  showToast(`✅ ${name} যোগ হয়েছে! পাসওয়ার্ড: ${pass}`, 'success');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+let currentPage = 'dashboard';
+let lifeMode = 'clock';
+let plannerView = 'todo';
+let todoFilterCategory = 'all';
+let todoSortMode = 'time';
+let todoSearchTerm = '';
+let meetingFilterMode = 'upcoming';
+let meetingSearchTerm = '';
+let todoEditId = null;
+let meetingEditId = null;
+const todoCategories = ['কাজ','ব্যক্তিগত','পড়াশোনা','পরিবার','স্বাস্থ্য','অর্থ','ফলো-আপ'];
+const todoPriorities = ['উচ্চ','মাঝারি','নিম্ন'];
+const fabPages = ['tx','debt','biz','life','users'];
+const pageSubtitles = { dashboard:'মূল ড্যাশবোর্ড', tx:'লেনদেন লগ', debt:'ঋণ ও হিসাব', biz:'ব্যবসায়িক ট্র্যাকার', life:'জীবন ব্যবস্থাপনা', settings:'সেটিংস', users:'ব্যবহারকারী ব্যবস্থাপনা' };
+
+function navigate(page, el) {
+  if (!AUTH.canAccess(page)) { showToast('⛔ এই পৃষ্ঠায় অ্যাক্সেস নেই', 'error'); return; }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if (el) el.classList.add('active');
+  currentPage = page;
+  document.getElementById('headerSub').textContent = pageSubtitles[page] || '';
+  document.getElementById('fab').className = 'fab' + (fabPages.includes(page)?'':' hidden');
+  renderPage(page);
+}
+
+function updateHeaderForRole() {
+  const cu = AUTH.getCurrentUser();
+  if (!cu) return;
+  // Add Users nav item if admin
+  const nav = document.getElementById('bottomNav');
+  if (cu.role === 'admin' && !document.getElementById('usersNavBtn')) {
+    const btn = document.createElement('button');
+    btn.className = 'nav-item';
+    btn.id = 'usersNavBtn';
+    btn.innerHTML = '<span class="nav-icon">👥</span><span>ইউজার</span>';
+    btn.onclick = () => navigate('users', btn);
+    nav.appendChild(btn);
+  }
+}
+
+function renderPage(page) {
+  if (page==='dashboard') renderDashboard();
+  else if (page==='tx') renderTxList('all');
+  else if (page==='debt') renderDebt();
+  else if (page==='biz') { buildBizTabBar(); renderBiz('goat'); }
+  else if (page==='life') renderLife(lifeMode);
+  else if (page==='settings') loadSettingsForm();
+  else if (page==='users') renderUsersList();
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const txs = DB.get('transactions');
+  const debts = DB.get('debts');
+  const goat = DB.get('goat');
+  const tea = DB.get('tea');
+  const m = monthCode();
+  const income = txs.filter(t=>t.type==='আয়'&&t.month===m).reduce((s,t)=>s+t.income,0);
+  const expense = txs.filter(t=>t.type==='ব্যয়'&&t.month===m).reduce((s,t)=>s+t.expense,0);
+  const debt = debts.filter(d=>d.status==='সক্রিয়').reduce((s,d)=>s+d.remaining,0);
+  const goatNet = goat.reduce((s,g)=>s+g.income-g.expense,0);
+  const teaNet = tea.reduce((s,t)=>s+t.income-t.expense,0);
+
+  const customBizList = DB.get('customBiz');
+  const customBizEntries = DB.get('customBizEntries');
+  const ckpi = document.getElementById('customBizKpi');
+  ckpi.innerHTML = customBizList.length ? `<div class="kpi-grid" style="margin-top:0">${customBizList.map(b=>{const net=customBizEntries.filter(e=>e.bizId===b.id).reduce((s,e)=>s+(e.income||0)-(e.expense||0),0);return`<div class="kpi-card animate-up" style="background:var(--purple-light);color:var(--purple)"><div class="kpi-label">${b.icon} ${b.name}</div><div class="kpi-value" style="font-size:18px">${fmt(net)}</div><div class="kpi-unit">${net>=0?'লাভ':'ক্ষতি'}</div></div>`;}).join('')}</div>` : '';
+
+  document.getElementById('kpi-income').textContent=fmt(income);
+  document.getElementById('kpi-expense').textContent=fmt(expense);
+  document.getElementById('kpi-net').textContent=fmt(income-expense);
+  document.getElementById('kpi-debt').textContent=fmt(debt);
+  document.getElementById('kpi-goat').textContent=fmt(goatNet);
+  document.getElementById('kpi-tea').textContent=fmt(teaNet);
+
+  const recent=[...txs].reverse().slice(0,5);
+  const rt=document.getElementById('recentTx');
+  rt.innerHTML=recent.length?recent.map(t=>`<div class="list-item"><div class="list-icon" style="background:${t.type==='আয়'?'#e8f5e9':'#ffebee'}">${t.module==='ছাগল খামার'?'🐐':t.module==='চা বাগান'?'🍃':'💰'}</div><div class="list-body"><div class="list-title">${t.desc}</div><div class="list-sub">${fmtDate(t.date)} · ${t.category}</div></div><div class="list-amount ${t.type==='আয়'?'text-income':'text-expense'}">${t.type==='আয়'?'+':'-'}${fmt(t.type==='আয়'?t.income:t.expense)}</div></div>`).join(''):'<div class="empty"><div class="empty-icon">📭</div><p>কোনো লেনদেন নেই</p></div>';
+
+  const activeDebts=debts.filter(d=>d.status==='সক্রিয়');
+  const ds=document.getElementById('debtSummary');
+  ds.innerHTML=activeDebts.length?activeDebts.map(d=>`<div class="list-item"><div class="list-icon" style="background:#ffebee">💳</div><div class="list-body"><div class="list-title">${d.lender}</div><div class="list-sub">${d.purpose} · ${fmtDate(d.date)}</div></div><div><div class="list-amount text-expense">${fmt(d.remaining)}</div></div></div>`).join(''):'<div class="empty"><div class="empty-icon">✅</div><p>কোনো সক্রিয় ঋণ নেই</p></div>';
+
+  const routines=DB.get('routine');
+  const todayR=routines.find(r=>r.date===today());
+  const rs=document.getElementById('routineSnap');
+  const items=['🕌 নামাজ','🌅 ভোর ওঠা','🏃 ব্যায়াম','👨‍👩‍👧 পরিবার','📖 পড়াশোনা','📊 ব্যবসা'];
+  const keys=['prayer','earlyRise','exercise','family','study','business'];
+  if(!todayR){rs.innerHTML=`<div style="text-align:center;padding:12px"><div style="font-size:32px">📋</div><p style="font-size:13px;color:var(--text-muted);margin-top:8px">আজকের রুটিন এখনো আপডেট হয়নি</p></div>`;}
+  else{const score=keys.filter(k=>todayR[k]).length;rs.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">${items.map((item,i)=>`<span style="padding:6px 10px;border-radius:20px;font-size:12px;font-weight:600;background:${todayR[keys[i]]?'var(--green-light)':'var(--red-light)'};color:${todayR[keys[i]]?'var(--green)':'var(--red)'}">${todayR[keys[i]]?'✅':'❌'} ${item}</span>`).join('')}</div><div style="text-align:center;font-size:14px;font-weight:700;color:var(--primary)">আজকের স্কোর: ${score}/6</div><div class="progress-wrap" style="margin-top:8px"><div class="progress-fill" style="width:${(score/6)*100}%"></div></div>`;}
+}
+
+// ── TRANSACTIONS ──
+let txFilter='all';
+function txTab(filter,el){txFilter=filter;document.querySelectorAll('#page-tx .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderTxList(filter);}
+function renderTxList(filter){
+  const txs=DB.get('transactions');let list=[...txs].reverse();
+  if(filter!=='all')list=list.filter(t=>t.type===filter);
+  const el=document.getElementById('txList');
+  const canEdit=AUTH.canEdit();
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>কোনো লেনদেন নেই</p></div>';return;}
+  el.innerHTML=list.map(t=>`<div class="card" style="padding:12px 14px;margin-bottom:10px"><div class="list-item" style="padding:0;border:none"><div class="list-icon" style="background:${t.type==='আয়'?'#e8f5e9':'#ffebee'};font-size:20px">${t.type==='আয়'?'📈':'📉'}</div><div class="list-body"><div class="list-title">${t.desc}</div><div class="list-sub">${fmtDate(t.date)} · ${t.module} · ${t.category}</div>${t.note?`<div class="list-sub">📝 ${t.note}</div>`:''}</div><div style="text-align:right"><div class="list-amount ${t.type==='আয়'?'text-income':'text-expense'}">${t.type==='আয়'?'+':'-'}${fmt(t.type==='আয়'?t.income:t.expense)}</div>${canEdit?`<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px"><button onclick="editTx('${t.id}')" style="background:#e8eaf6;border:none;font-size:14px;cursor:pointer;color:var(--primary);padding:3px 8px;border-radius:6px">✏️</button><button onclick="deleteTx('${t.id}')" style="background:#ffebee;border:none;font-size:14px;cursor:pointer;color:var(--red);padding:3px 8px;border-radius:6px">🗑️</button></div>`:''}     </div></div></div>`).join('');
+}
+function deleteTx(id){if(!AUTH.canEdit()){showToast('⛔ অনুমতি নেই','error');return;}if(!confirm('মুছবেন?'))return;DB.set('transactions',DB.get('transactions').filter(t=>t.id!==id));renderTxList(txFilter);renderDashboard();showToast('✅ মুছে ফেলা হয়েছে');}
+function editTx(id){
+  const tx=DB.get('transactions').find(t=>t.id===id);if(!tx)return;
+  document.getElementById('modalIcon').textContent='✏️';document.getElementById('modalTitleText').textContent='লেনদেন সম্পাদনা';
+  document.getElementById('modalBody').innerHTML=`<div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="f-date" type="date" value="${tx.date}"></div><div class="form-row"><div class="form-group"><label class="form-label">মডিউল</label><select class="form-select" id="f-module">${['ব্যক্তিগত','ছাগল খামার','চা বাগান','সাধারণ'].map(m=>`<option ${tx.module===m?'selected':''}>${m}</option>`).join('')}</select></div><div class="form-group"><label class="form-label">ধরন</label><select class="form-select" id="f-type"><option ${tx.type==='আয়'?'selected':''}>আয়</option><option ${tx.type==='ব্যয়'?'selected':''}>ব্যয়</option></select></div></div><div class="form-group"><label class="form-label">ক্যাটাগরি</label><input class="form-input" id="f-cat" value="${tx.category||''}"></div><div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="f-desc" value="${tx.desc||''}"></div><div class="form-group"><label class="form-label">পরিমাণ (৳)</label><input class="form-input" id="f-amount" type="number" value="${tx.type==='আয়'?tx.income:tx.expense}"></div><div class="form-group"><label class="form-label">নোট</label><input class="form-input" id="f-note" value="${tx.note||''}"></div><button class="btn btn-primary" onclick="updateTx('${id}')">✅ আপডেট</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+function updateTx(id){
+  const txs=DB.get('transactions');const idx=txs.findIndex(t=>t.id===id);if(idx===-1)return;
+  const type=document.getElementById('f-type').value;const amount=parseFloat(document.getElementById('f-amount').value)||0;const desc=document.getElementById('f-desc').value.trim();
+  if(!desc||!amount){showToast('⚠️ বিবরণ ও পরিমাণ আবশ্যক','error');return;}
+  txs[idx]={...txs[idx],date:document.getElementById('f-date').value,module:document.getElementById('f-module').value,category:document.getElementById('f-cat').value||'সাধারণ',type,desc,income:type==='আয়'?amount:0,expense:type==='ব্যয়'?amount:0,note:document.getElementById('f-note').value,month:document.getElementById('f-date').value.slice(0,7)};
+  DB.set('transactions',txs);closeModal('addModal');renderTxList(txFilter);renderDashboard();showToast('✅ আপডেট হয়েছে!','success');
+}
+
+// ── DEBT ──
+let debtMode='debt';
+function debtTab(mode,el){debtMode=mode;document.querySelectorAll('#page-debt .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderDebt();}
+function renderDebt(){
+  const el=document.getElementById('debtContent');const canEdit=AUTH.canEdit();
+  if(debtMode==='debt'){
+    const debts=DB.get('debts');
+    if(!debts.length){el.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>কোনো ঋণ নেই</p></div>';return;}
+    el.innerHTML=debts.map(d=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-size:15px;font-weight:700">${d.lender}</div><div style="font-size:12px;color:var(--text-muted)">${d.purpose} · ${fmtDate(d.date)}</div></div><span class="badge ${d.status==='সক্রিয়'?'badge-red':'badge-green'}">${d.status}</span></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"><div style="text-align:center;background:#f5f5f5;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">মূল</div><div style="font-size:14px;font-weight:700">${fmt(d.principal)}</div></div><div style="text-align:center;background:#e8f5e9;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">পরিশোধ</div><div style="font-size:14px;font-weight:700;color:var(--green)">${fmt(d.paid)}</div></div><div style="text-align:center;background:#ffebee;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">বকেয়া</div><div style="font-size:14px;font-weight:700;color:var(--red)">${fmt(d.remaining)}</div></div></div><div class="progress-wrap"><div class="progress-fill" style="width:${Math.min((d.paid/d.principal)*100,100).toFixed(0)}%"></div></div>${canEdit?`<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-sm" style="background:var(--primary);color:#fff;flex:1" onclick="payInstallment('${d.id}')">💳 কিস্তি</button><button class="btn btn-sm" style="background:#e8eaf6;color:var(--primary)" onclick="editDebt('${d.id}')">✏️</button><button class="btn btn-sm" style="background:var(--whatsapp);color:#fff" onclick="sendDebtWA('${d.id}')">📱</button><button class="btn btn-sm btn-danger" onclick="deleteDebt('${d.id}')">🗑️</button></div>`:''}</div>`).join('');
+  } else if(debtMode==='personal'){
+    const pers=DB.get('personal');
+    const grouped={};pers.forEach(p=>{if(!grouped[p.person])grouped[p.person]={person:p.person,phone:p.phone,debit:0,credit:0,records:[]};grouped[p.person].debit+=p.iGave;grouped[p.person].credit+=p.iGot;grouped[p.person].records.push(p);});
+    if(!Object.keys(grouped).length){el.innerHTML='<div class="empty"><div class="empty-icon">🤝</div><p>কোনো হিসাব নেই</p></div>';return;}
+    el.innerHTML=Object.values(grouped).map(g=>{
+      const bal=g.debit-g.credit;
+      const records=[...g.records].sort((a,b)=>new Date(a.date)-new Date(b.date));
+      let runBal=0;
+      const histRows=records.slice().reverse().map(r=>{
+        runBal+=(r.iGave||0)-(r.iGot||0);
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600">${r.desc||'-'}</div>
+            <div style="font-size:11px;color:var(--text-muted)">${fmtDate(r.date)}</div>
+          </div>
+          <div style="text-align:right;margin-left:8px">
+            ${r.iGave>0?`<div style="font-size:12px;color:var(--red);font-weight:700">-${fmt(r.iGave)}</div>`:''}
+            ${r.iGot>0?`<div style="font-size:12px;color:var(--green);font-weight:700">+${fmt(r.iGot)}</div>`:''}
+          </div>
+          ${canEdit?`<div style="display:flex;gap:4px;margin-left:8px">
+            <button onclick="editPersonalRecord('${r.id}')" style="background:#e8eaf6;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:13px">✏️</button>
+            <button onclick="deletePersonalRecord('${r.id}')" style="background:#ffebee;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:13px">🗑️</button>
+          </div>`:''}
+        </div>`;
+      }).join('');
+      return`<div class="card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div><div style="font-size:15px;font-weight:700">${g.person}</div><div style="font-size:11px;color:var(--text-muted)">${g.phone||''}</div></div>
+          <span class="badge ${bal>0?'badge-green':bal<0?'badge-red':'badge-blue'}">${bal>0?'আমি পাব':bal<0?'আমি দেব':'সমতা'}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="text-align:center;background:#ffebee;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">দিয়েছি</div><div style="font-size:14px;font-weight:700;color:var(--red)">${fmt(g.debit)}</div></div>
+          <div style="text-align:center;background:#e8f5e9;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">পেয়েছি</div><div style="font-size:14px;font-weight:700;color:var(--green)">${fmt(g.credit)}</div></div>
+          <div style="text-align:center;background:#e8eaf6;border-radius:8px;padding:8px"><div style="font-size:11px;color:var(--text-muted)">ব্যালেন্স</div><div style="font-size:14px;font-weight:700;color:var(--primary)">${fmt(Math.abs(bal))}</div></div>
+        </div>
+        <button class="wa-btn" style="width:100%;border-radius:var(--radius-sm);margin-bottom:${records.length?'10':'0'}px;justify-content:center" onclick="sendPersonalWA('${g.person}',${bal},'${g.phone||''}')">
+          <span style="font-size:18px">📱</span> WhatsApp রিপোর্ট পাঠান
+        </button>
+        ${records.length?`<div style="border-top:1px solid var(--border);padding-top:10px"><div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:8px">📋 লেনদেন ইতিহাস</div>${histRows}</div>`:''}
+      </div>`;
+    }).join('');
+  } else {
+    const entries=DB.get('office');
+    if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏢</div><p>কোনো অফিস এন্ট্রি নেই</p></div>';return;}
+    const ti=entries.reduce((s,e)=>s+(e.income||0),0),te=entries.reduce((s,e)=>s+(e.expense||0),0),ts=entries.reduce((s,e)=>s+(e.salary||0),0);
+    el.innerHTML=`<div class="card"><div class="card-title"><span class="icon">🏢</span> সারসংক্ষেপ</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="text-align:center;background:#e8f5e9;border-radius:8px;padding:10px"><div style="font-size:11px;color:var(--text-muted)">আয়</div><div style="font-size:15px;font-weight:700;color:var(--green)">${fmt(ti)}</div></div><div style="text-align:center;background:#ffebee;border-radius:8px;padding:10px"><div style="font-size:11px;color:var(--text-muted)">ব্যয়+বেতন</div><div style="font-size:15px;font-weight:700;color:var(--red)">${fmt(te+ts)}</div></div></div></div>${entries.slice().reverse().map(e=>`<div class="card" style="margin-bottom:8px"><div style="font-size:14px;font-weight:700">${e.title}</div><div style="font-size:11px;color:var(--text-muted)">${fmtDate(e.date)} · ${e.category}</div>${canEdit?`<button class="btn btn-sm btn-danger" style="margin-top:8px;width:100%;justify-content:center" onclick="deleteOffice('${e.id}')">🗑️ মুছুন</button>`:''}</div>`).join('')}`;
+  }
+}
+function deleteDebt(id){if(!AUTH.canEdit()){showToast('⛔ অনুমতি নেই','error');return;}if(!confirm('মুছবেন?'))return;DB.set('debts',DB.get('debts').filter(d=>d.id!==id));renderDebt();renderDashboard();showToast('✅ মুছে ফেলা হয়েছে');}
+function deleteOffice(id){if(!confirm('মুছবেন?'))return;DB.set('office',DB.get('office').filter(e=>e.id!==id));renderDebt();showToast('✅ মুছে ফেলা হয়েছে');}
+function payInstallment(id){
+  const d=DB.get('debts').find(d=>d.id===id);if(!d)return;
+  document.getElementById('modalIcon').textContent='💳';document.getElementById('modalTitleText').textContent='কিস্তি পরিশোধ';
+  document.getElementById('modalBody').innerHTML=`<div style="background:#e8eaf6;border-radius:10px;padding:12px;margin-bottom:14px"><div style="font-weight:700">${d.lender}</div><div style="font-size:12px;color:var(--text-muted)">বকেয়া: <strong style="color:var(--red)">${fmt(d.remaining)}</strong></div></div><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="pi-date" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">পরিমাণ (৳)</label><input class="form-input" id="pi-amount" type="number" value="${d.installment||''}"></div><button class="btn btn-primary" onclick="saveInstallment('${id}')">✅ সংরক্ষণ</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+function saveInstallment(id){
+  const amount=parseFloat(document.getElementById('pi-amount').value)||0;if(!amount){showToast('⚠️ পরিমাণ দিন','error');return;}
+  const debts=DB.get('debts');const idx=debts.findIndex(d=>d.id===id);if(idx===-1)return;
+  debts[idx].paid=(debts[idx].paid||0)+amount;debts[idx].remaining=Math.max(0,debts[idx].principal-debts[idx].paid);debts[idx].status=debts[idx].remaining<=0?'পরিশোধিত':'সক্রিয়';
+  const tx={id:uid(),date:document.getElementById('pi-date').value,module:'ঋণ',category:'কিস্তি',type:'ব্যয়',desc:debts[idx].lender+' - কিস্তি',income:0,expense:amount,note:'',month:document.getElementById('pi-date').value.slice(0,7)};
+  const txs=DB.get('transactions');txs.push(tx);DB.set('transactions',txs);DB.set('debts',debts);
+  closeModal('addModal');renderDebt();renderDashboard();showToast(`✅ ${fmt(amount)} কিস্তি পরিশোধ!`,'success');
+}
+function editDebt(id){
+  const d=DB.get('debts').find(d=>d.id===id);if(!d)return;
+  document.getElementById('modalIcon').textContent='✏️';document.getElementById('modalTitleText').textContent='ঋণ সম্পাদনা';
+  document.getElementById('modalBody').innerHTML=`<div class="form-group"><label class="form-label">ঋণদাতার নাম</label><input class="form-input" id="d-lender" value="${d.lender}"></div><div class="form-group"><label class="form-label">উদ্দেশ্য</label><input class="form-input" id="d-purpose" value="${d.purpose||''}"></div><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="d-date" type="date" value="${d.date}"></div><div class="form-group"><label class="form-label">মূল টাকা (৳)</label><input class="form-input" id="d-principal" type="number" value="${d.principal}"></div><div class="form-group"><label class="form-label">পরিশোধ (৳)</label><input class="form-input" id="d-paid" type="number" value="${d.paid}"></div><div class="form-group"><label class="form-label">ফোন</label><input class="form-input" id="d-phone" type="tel" value="${d.phone||''}"></div><div class="form-group"><label class="form-label">মাসিক কিস্তি (৳)</label><input class="form-input" id="d-installment" type="number" value="${d.installment||0}"></div><button class="btn btn-primary" onclick="updateDebt('${id}')">✅ আপডেট</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+function updateDebt(id){
+  const debts=DB.get('debts');const idx=debts.findIndex(d=>d.id===id);if(idx===-1)return;
+  const l=document.getElementById('d-lender').value.trim(),p=parseFloat(document.getElementById('d-principal').value)||0,paid=parseFloat(document.getElementById('d-paid').value)||0;
+  if(!l||!p){showToast('⚠️ তথ্য পূরণ করুন','error');return;}
+  debts[idx]={...debts[idx],lender:l,purpose:document.getElementById('d-purpose').value,date:document.getElementById('d-date').value,principal:p,paid,remaining:p-paid,phone:document.getElementById('d-phone').value,installment:parseFloat(document.getElementById('d-installment').value)||0,status:p-paid>0?'সক্রিয়':'পরিশোধিত'};
+  DB.set('debts',debts);closeModal('addModal');renderDebt();renderDashboard();showToast('✅ আপডেট হয়েছে!','success');
+}
+
+// ── BUSINESS ──
+let bizMode='goat';
+function buildBizTabBar(){
+  const customs=DB.get('customBiz');const bar=document.getElementById('bizTabBar');if(!bar)return;
+  bar.innerHTML=`<button class="tab ${bizMode==='goat'?'active':''}" onclick="bizTab('goat',this)">🐐 ছাগল</button><button class="tab ${bizMode==='tea'?'active':''}" onclick="bizTab('tea',this)">🍃 চা বাগান</button>${customs.map(b=>`<button class="tab ${bizMode===b.id?'active':''}" onclick="bizTab('${b.id}',this)">${b.icon} ${b.name}</button>`).join('')}<button class="tab ${bizMode==='goals'?'active':''}" onclick="bizTab('goals',this)">🎯 লক্ষ্য</button>${AUTH.canEdit()?`<button class="tab" onclick="openAddBizModal()" style="background:#e8eaf6;color:var(--primary);font-size:18px;padding:4px 12px">＋</button>`:''}`;
+}
+function bizTab(mode,el){bizMode=mode;buildBizTabBar();renderBiz(mode);}
+function renderBiz(mode){
+  const el=document.getElementById('bizContent');const canEdit=AUTH.canEdit();
+  if(mode==='goat'){
+    const data=DB.get('goat');const inc=data.reduce((s,d)=>s+d.income,0),exp=data.reduce((s,d)=>s+d.expense,0);
+    el.innerHTML=`<div class="card" style="background:linear-gradient(135deg,var(--teal),#00695c);color:#fff;margin-bottom:14px"><div style="display:flex;justify-content:space-between"><div><div style="font-size:12px;opacity:0.8">আয়</div><div style="font-size:22px;font-weight:800">${fmt(inc)}</div></div><div><div style="font-size:12px;opacity:0.8">ব্যয়</div><div style="font-size:22px;font-weight:800">${fmt(exp)}</div></div><div><div style="font-size:12px;opacity:0.8">নিট</div><div style="font-size:22px;font-weight:800">${fmt(inc-exp)}</div></div></div></div>${!data.length?'<div class="empty"><div class="empty-icon">🐐</div><p>কোনো এন্ট্রি নেই</p></div>':data.slice().reverse().map(d=>`<div class="card" style="padding:12px 14px;margin-bottom:8px"><div class="list-item" style="padding:0;border:none"><div class="list-icon" style="background:${d.type==='আয়'?'#e0f2f1':'#fce4ec'}">${d.type==='আয়'?'💰':'🍂'}</div><div class="list-body"><div class="list-title">${d.desc}</div><div class="list-sub">${fmtDate(d.date)}</div></div><div class="list-amount ${d.type==='আয়'?'text-income':'text-expense'}">${d.type==='আয়'?'+':'-'}${fmt(d.type==='আয়'?d.income:d.expense)}</div></div></div>`).join('')}`;
+  } else if(mode==='tea'){
+    const data=DB.get('tea');const inc=data.reduce((s,d)=>s+d.income,0),exp=data.reduce((s,d)=>s+d.expense,0);
+    el.innerHTML=`<div class="card" style="background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;margin-bottom:14px"><div style="display:flex;justify-content:space-between"><div><div style="font-size:12px;opacity:0.8">আয়</div><div style="font-size:22px;font-weight:800">${fmt(inc)}</div></div><div><div style="font-size:12px;opacity:0.8">ব্যয়</div><div style="font-size:22px;font-weight:800">${fmt(exp)}</div></div><div><div style="font-size:12px;opacity:0.8">নিট</div><div style="font-size:22px;font-weight:800">${fmt(inc-exp)}</div></div></div></div>${!data.length?'<div class="empty"><div class="empty-icon">🍃</div><p>কোনো এন্ট্রি নেই</p></div>':data.slice().reverse().map(d=>`<div class="card" style="padding:12px 14px;margin-bottom:8px"><div class="list-item" style="padding:0;border:none"><div class="list-icon" style="background:#e8f5e9">🍃</div><div class="list-body"><div class="list-title">${d.desc}</div><div class="list-sub">${fmtDate(d.date)}</div></div><div class="list-amount ${d.type==='আয়'?'text-income':'text-expense'}">${d.type==='আয়'?'+':'-'}${fmt(d.type==='আয়'?d.income:d.expense)}</div></div></div>`).join('')}`;
+  } else if(mode==='goals'){
+    const goals=DB.get('goals');
+    el.innerHTML=!goals.length?'<div class="empty"><div class="empty-icon">🎯</div><p>কোনো লক্ষ্য নেই</p></div>':goals.map(g=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:14px;font-weight:700">${g.goal}</div><div style="font-size:11px;color:var(--text-muted)">${g.category}</div></div><span class="badge badge-blue">${g.status}</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${g.progress}%"></div></div><div style="text-align:right;font-size:13px;font-weight:700;color:var(--primary);margin-top:4px">${g.progress}%</div>${canEdit?`<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="range" min="0" max="100" value="${g.progress}" style="flex:1" oninput="updateGoalProgress('${g.id}',this.value)"><span style="font-size:12px;font-weight:700;color:var(--primary);width:35px">${g.progress}%</span></div>`:''}</div>`).join('');
+  } else {
+    const biz=DB.get('customBiz').find(b=>b.id===mode);
+    if(!biz){el.innerHTML='<div class="empty"><p>ব্যবসা খুঁজে পাওয়া যায়নি</p></div>';return;}
+    const entries=DB.get('customBizEntries').filter(e=>e.bizId===mode);
+    const inc=entries.reduce((s,e)=>s+(e.income||0),0),exp=entries.reduce((s,e)=>s+(e.expense||0),0);
+    const colors=['#1a237e,#283593','#880e4f,#ad1457','#4a148c,#6a1b9a','#e65100,#ef6c00','#004d40,#00695c'];
+    el.innerHTML=`<div class="card" style="background:linear-gradient(135deg,${colors[biz.colorIdx||0]});color:#fff;margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:28px">${biz.icon}</div><div style="font-size:16px;font-weight:800">${biz.name}</div>${canEdit?`<button onclick="deleteCustomBiz('${biz.id}')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer">🗑️</button>`:''}</div><div style="display:flex;justify-content:space-between"><div><div style="font-size:12px;opacity:0.8">আয়</div><div style="font-size:20px;font-weight:800">${fmt(inc)}</div></div><div><div style="font-size:12px;opacity:0.8">ব্যয়</div><div style="font-size:20px;font-weight:800">${fmt(exp)}</div></div><div><div style="font-size:12px;opacity:0.8">নিট</div><div style="font-size:20px;font-weight:800">${fmt(inc-exp)}</div></div></div></div>${!entries.length?`<div class="empty"><div class="empty-icon">${biz.icon}</div><p>কোনো এন্ট্রি নেই</p></div>`:entries.slice().reverse().map(e=>`<div class="card" style="padding:12px 14px;margin-bottom:8px"><div class="list-item" style="padding:0;border:none"><div class="list-icon" style="background:${e.type==='আয়'?'#e8f5e9':'#ffebee'}">${e.type==='আয়'?'💰':'💸'}</div><div class="list-body"><div class="list-title">${e.desc}</div><div class="list-sub">${fmtDate(e.date)}</div></div><div style="display:flex;align-items:center;gap:8px"><div class="list-amount ${e.type==='আয়'?'text-income':'text-expense'}">${e.type==='আয়'?'+':'-'}${fmt(e.type==='আয়'?e.income:e.expense)}</div>${canEdit?`<button onclick="deleteCustomBizEntry('${e.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px">🗑️</button>`:''}</div></div></div>`).join('')}`;
+  }
+}
+function updateGoalProgress(id,val){const goals=DB.get('goals');const g=goals.find(g=>g.id===id);if(g){g.progress=parseInt(val);DB.set('goals',goals);renderBiz('goals');showToast('✅ অগ্রগতি আপডেট');}}
+function openAddBizModal(){
+  const icons=['🏪','🏬','🚗','🍽️','👗','💊','📱','🏗️','🐓','🐟','🌾','🧵','🎨','💈','🔧','🛒'];
+  document.getElementById('modalIcon').textContent='🏪';document.getElementById('modalTitleText').textContent='নতুন ব্যবসা';
+  document.getElementById('modalBody').innerHTML=`<div class="form-group"><label class="form-label">ব্যবসার নাম</label><input class="form-input" id="cb-name" placeholder="যেমন: মুরগির খামার"></div><div class="form-group"><label class="form-label">আইকন</label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="cb-icon-picker">${icons.map((ic,i)=>`<button onclick="selectBizIcon('${ic}',this)" style="font-size:24px;background:${i===0?'var(--primary-light)':'#f5f5f5'};border:2px solid ${i===0?'var(--primary)':'transparent'};border-radius:10px;padding:6px 10px;cursor:pointer">${ic}</button>`).join('')}</div><input type="hidden" id="cb-icon" value="🏪"></div><div class="form-group"><label class="form-label">রঙ থিম</label><select class="form-select" id="cb-color">${['নীল','গোলাপী','বেগুনী','কমলা','সবুজ'].map((c,i)=>`<option value="${i}">${c}</option>`).join('')}</select></div><button class="btn btn-primary" onclick="saveCustomBiz()">✅ ব্যবসা যোগ করুন</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+function selectBizIcon(icon,btn){document.getElementById('cb-icon').value=icon;document.getElementById('modalIcon').textContent=icon;document.querySelectorAll('#cb-icon-picker button').forEach(b=>{b.style.background='#f5f5f5';b.style.borderColor='transparent';});btn.style.background='var(--primary-light)';btn.style.borderColor='var(--primary)';}
+function saveCustomBiz(){const name=document.getElementById('cb-name').value.trim();if(!name){showToast('⚠️ নাম দিন','error');return;}const biz={id:'biz_'+uid(),name,icon:document.getElementById('cb-icon').value,colorIdx:parseInt(document.getElementById('cb-color').value)||0};const list=DB.get('customBiz');list.push(biz);DB.set('customBiz',list);closeModal('addModal');bizMode=biz.id;buildBizTabBar();renderBiz(biz.id);showToast('✅ '+name+' যোগ হয়েছে!','success');}
+function deleteCustomBiz(id){if(!confirm('এই ব্যবসা মুছবেন?'))return;DB.set('customBiz',DB.get('customBiz').filter(b=>b.id!==id));DB.set('customBizEntries',DB.get('customBizEntries').filter(e=>e.bizId!==id));bizMode='goat';buildBizTabBar();renderBiz('goat');showToast('✅ মুছে ফেলা হয়েছে');}
+function deleteCustomBizEntry(id){if(!confirm('মুছবেন?'))return;DB.set('customBizEntries',DB.get('customBizEntries').filter(e=>e.id!==id));renderBiz(bizMode);showToast('✅ মুছে ফেলা হয়েছে');}
+function customBizEntryForm(bizId){const biz=DB.get('customBiz').find(b=>b.id===bizId);return`<div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="cbe-desc" placeholder="${biz?biz.name+' সংক্রান্ত':'বিবরণ'}"></div><div class="form-row"><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="cbe-date" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">ধরন</label><select class="form-select" id="cbe-type"><option>আয়</option><option>ব্যয়</option></select></div></div><div class="form-group"><label class="form-label">ক্যাটাগরি</label><input class="form-input" id="cbe-cat" placeholder="বিক্রয়, সরবরাহ..."></div><div class="form-row"><div class="form-group"><label class="form-label">আয় (৳)</label><input class="form-input" id="cbe-income" type="number" value="0"></div><div class="form-group"><label class="form-label">ব্যয় (৳)</label><input class="form-input" id="cbe-expense" type="number" value="0"></div></div><input type="hidden" id="cbe-bizid" value="${bizId}"><button class="btn btn-primary" onclick="saveCustomBizEntry()">✅ সংরক্ষণ</button>`;}
+function saveCustomBizEntry(){const desc=document.getElementById('cbe-desc').value.trim();const bizId=document.getElementById('cbe-bizid').value;if(!desc){showToast('⚠️ বিবরণ দিন','error');return;}const type=document.getElementById('cbe-type').value;const entry={id:uid(),bizId,desc,date:document.getElementById('cbe-date').value,category:document.getElementById('cbe-cat').value,type,income:parseFloat(document.getElementById('cbe-income').value)||0,expense:parseFloat(document.getElementById('cbe-expense').value)||0};const list=DB.get('customBizEntries');list.push(entry);DB.set('customBizEntries',list);closeModal('addModal');renderBiz(bizId);showToast('✅ সংরক্ষিত!','success');}
+
+// ── LIFE ──
+function lifeTab(mode,el){lifeMode=mode;if(mode!=='planner') plannerView='todo';document.querySelectorAll('#page-life .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderLife(mode);}
+function plannerTab(mode,el){plannerView=mode;document.querySelectorAll('#plannerTabs .planner-tab').forEach(t=>t.classList.remove('active'));if(el) el.classList.add('active');renderLife('planner');}
+
+function escHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function prioRank(priority) {
+  return ({'উচ্চ': 0, 'মাঝারি': 1, 'নিম্ন': 2}[priority] ?? 3);
+}
+function parsePlannerDate(date, time) {
+  if (!date) return new Date('2099-12-31T23:59:59');
+  return new Date(`${date}T${time || '23:59'}:00`);
+}
+function fmtPlannerDate(dateStr) {
+  if (!dateStr) return 'অনির্ধারিত';
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('bn-BD', { day:'2-digit', month:'short', year:'numeric' });
+}
+function fmtPlannerDateTime(dateStr, timeStr) {
+  if (!dateStr) return 'অনির্ধারিত';
+  const d = new Date(`${dateStr}T${timeStr || '00:00'}:00`);
+  return d.toLocaleString('bn-BD', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+function taskDueLabel(task) {
+  const date = task.dueDate ? new Date(task.dueDate + 'T00:00:00') : null;
+  const todayStr = today();
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0,10);
+  if (!date) return 'তারিখ নেই';
+  if (task.dueDate === todayStr) return 'আজ';
+  if (task.dueDate === tomorrow) return 'আগামীকাল';
+  return fmtPlannerDate(task.dueDate);
+}
+function googleCalendarUrl(meeting) {
+  const start = parsePlannerDate(meeting.date, meeting.startTime);
+  let end = parsePlannerDate(meeting.date, meeting.endTime);
+  if (end <= start) end = new Date(start.getTime() + 60 * 60000);
+  const toICS = d => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: meeting.title || 'মিটিং',
+    details: meeting.note || '',
+    location: meeting.location || '',
+    dates: `${toICS(start)}/${toICS(end)}`
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+function setTodoFilterCategory(value) { todoFilterCategory = value; renderLife('planner'); }
+function setTodoSortMode(value) { todoSortMode = value; renderLife('planner'); }
+function setTodoSearch(value) { todoSearchTerm = value; renderLife('planner'); }
+function setMeetingFilterMode(value) { meetingFilterMode = value; renderLife('planner'); }
+function setMeetingSearch(value) { meetingSearchTerm = value; renderLife('planner'); }
+function plannerTodos() {
+  const items = DB.get('todoItems', []);
+  const q = todoSearchTerm.trim().toLowerCase();
+  return [...items].filter(t => {
+    const matchesCategory = todoFilterCategory === 'all' || (t.category || '') === todoFilterCategory;
+    const hay = `${t.title || ''} ${t.note || ''} ${t.category || ''}`.toLowerCase();
+    return matchesCategory && (!q || hay.includes(q));
+  }).sort((a, b) => {
+    if (todoSortMode === 'priority') return prioRank(a.priority) - prioRank(b.priority) || parsePlannerDate(a.dueDate, a.dueTime) - parsePlannerDate(b.dueDate, b.dueTime);
+    if (todoSortMode === 'category') return String(a.category || '').localeCompare(String(b.category || ''), 'bn') || parsePlannerDate(a.dueDate, a.dueTime) - parsePlannerDate(b.dueDate, b.dueTime);
+    return parsePlannerDate(a.dueDate, a.dueTime) - parsePlannerDate(b.dueDate, b.dueTime) || prioRank(a.priority) - prioRank(b.priority);
+  });
+}
+function plannerMeetings() {
+  const items = DB.get('meetings', []);
+  const q = meetingSearchTerm.trim().toLowerCase();
+  const now = new Date();
+  return [...items].filter(m => {
+    const date = m.date ? new Date(`${m.date}T${m.startTime || '00:00'}:00`) : null;
+    const isUpcoming = !date || date >= now;
+    const matchesMode = meetingFilterMode === 'all' ? true : meetingFilterMode === 'upcoming' ? isUpcoming : !isUpcoming;
+    const hay = `${m.title || ''} ${m.location || ''} ${m.note || ''}`.toLowerCase();
+    return matchesMode && (!q || hay.includes(q));
+  }).sort((a, b) => parsePlannerDate(a.date, a.startTime) - parsePlannerDate(b.date, b.startTime));
+}
+function todoGroupsHtml(items) {
+  if (!items.length) {
+    return `<div class="empty"><div class="empty-icon">✅</div><p>এখনও কোনো টুডু যোগ করা হয়নি</p></div>`;
+  }
+  const groups = new Map();
+  items.forEach(item => {
+    const key = item.dueDate || 'none';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+  const sortedKeys = [...groups.keys()].sort((a, b) => {
+    if (a === 'none') return 1;
+    if (b === 'none') return -1;
+    return new Date(a) - new Date(b);
+  });
+  return sortedKeys.map(key => {
+    const title = key === 'none' ? 'তারিখবিহীন কাজ' : fmtPlannerDate(key);
+    const arr = groups.get(key).sort((a, b) => prioRank(a.priority) - prioRank(b.priority) || String(a.title || '').localeCompare(String(b.title || ''), 'bn'));
+    return `<div class="card" style="margin-top:12px"><div class="card-title"><span class="icon">🗓️</span> ${escHtml(title)}</div>${arr.map(todo => {
+      const done = !!todo.done;
+      const priColor = todo.priority === 'উচ্চ' ? 'var(--red)' : todo.priority === 'মাঝারি' ? 'var(--orange)' : 'var(--green)';
+      return `<div style="border:1px solid var(--border);border-radius:14px;padding:12px 12px 10px;margin-bottom:10px;background:${done ? '#f7f7f7' : '#fff'};opacity:${done ? '.72' : '1'}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <strong style="font-size:14px;${done ? 'text-decoration:line-through;' : ''}">${escHtml(todo.title || '')}</strong>
+              <span style="font-size:10px;background:${priColor}15;color:${priColor};padding:3px 8px;border-radius:999px;font-weight:700">${escHtml(todo.priority || 'মাঝারি')}</span>
+              <span style="font-size:10px;background:#eef2ff;color:var(--primary);padding:3px 8px;border-radius:999px;font-weight:700">${escHtml(todo.category || 'সাধারণ')}</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px">${escHtml(todo.note || 'কোনো নোট নেই')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px">⏱️ ${escHtml(taskDueLabel(todo))}${todo.dueTime ? ' · ' + escHtml(todo.dueTime) : ''}</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);white-space:nowrap">
+            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleTodo('${todo.id}', this.checked)">
+            ${done ? 'Done' : 'Open'}
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="editTodo('${todo.id}')">✏️ সম্পাদনা</button>
+          <button class="btn btn-danger" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="deleteTodo('${todo.id}')">🗑️ মুছুন</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }).join('');
+}
+function meetingGroupsHtml(items) {
+  if (!items.length) {
+    return `<div class="empty"><div class="empty-icon">📅</div><p>এখনও কোনো মিটিং যোগ করা হয়নি</p></div>`;
+  }
+  const groups = new Map();
+  items.forEach(item => {
+    const key = item.date || 'none';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+  const sortedKeys = [...groups.keys()].sort((a, b) => {
+    if (a === 'none') return 1;
+    if (b === 'none') return -1;
+    return new Date(a) - new Date(b);
+  });
+  return sortedKeys.map(key => {
+    const title = key === 'none' ? 'তারিখবিহীন মিটিং' : fmtPlannerDate(key);
+    const arr = groups.get(key).sort((a, b) => parsePlannerDate(a.date, a.startTime) - parsePlannerDate(b.date, b.startTime));
+    return `<div class="card" style="margin-top:12px"><div class="card-title"><span class="icon">📍</span> ${escHtml(title)}</div>${arr.map(meeting => {
+      const link = googleCalendarUrl(meeting);
+      return `<div style="border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;background:#fff">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:15px;font-weight:800;color:var(--primary)">${escHtml(meeting.title || '')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px">🕘 ${escHtml(fmtPlannerDateTime(meeting.date, meeting.startTime))}${meeting.endTime ? ' – ' + escHtml(meeting.endTime) : ''}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">📍 ${escHtml(meeting.location || 'লোকেশন নেই')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">${escHtml(meeting.note || 'কোনো নোট নেই')}</div>
+          </div>
+          <span style="font-size:10px;background:#eef2ff;color:var(--primary);padding:4px 8px;border-radius:999px;font-weight:700">${meeting.syncToCalendar ? 'Calendar Sync' : 'Manual'}</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <a class="btn btn-primary" href="${link}" target="_blank" rel="noopener" style="padding:8px 12px;border-radius:10px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center">📅 Google Calendar</a>
+          <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="copyMeetingLink('${link.replace(/'/g, "\\'")}')">🔗 কপি</button>
+          <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="editMeeting('${meeting.id}')">✏️ সম্পাদনা</button>
+          <button class="btn btn-danger" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="deleteMeeting('${meeting.id}')">🗑️ মুছুন</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }).join('');
+}
+function renderLife(mode){
+  const el=document.getElementById('lifeContent');const canEdit=AUTH.canEdit();
+  const fab = document.getElementById('fab');
+  if(mode==='clock'){
+    if (fab) fab.classList.remove('hidden');
+    const clocks=DB.get('clock');const tc=clocks.find(c=>c.date===today())||{};
+    el.innerHTML=`<div class="card"><div class="card-title"><span class="icon">⏰</span> আজকের ২৪ ঘণ্টা</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${[['😴','ঘুম','sleep','ঘণ্টা'],['💼','কাজ','work','ঘণ্টা'],['📚','পড়াশোনা','study','ঘণ্টা'],['🏃','ব্যায়াম','exercise','মিনিট'],['🍽️','বিশ্রাম','rest','ঘণ্টা'],['👨‍👩‍👧','পরিবার','family','ঘণ্টা']].map(([ic,lbl,key,unit])=>`<div style="background:#f5f5f5;border-radius:10px;padding:12px"><div style="font-size:22px">${ic}</div><div style="font-size:12px;color:var(--text-muted)">${lbl}</div>${canEdit?`<input type="number" min="0" max="${unit==='মিনিট'?480:24}" step="${unit==='মিনিট'?5:0.5}" value="${tc[key]||0}" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:16px;font-weight:700;text-align:center;margin-top:4px;font-family:inherit" onchange="updateClock('${key}',this.value)">`:` <div style="font-size:20px;font-weight:800;margin-top:4px">${tc[key]||0}</div>`}<div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:2px">${unit}</div></div>`).join('')}</div><div id="clockTotal" style="text-align:center;margin-top:14px;padding:12px;background:#e8eaf6;border-radius:10px;font-size:14px;font-weight:700;color:var(--primary)">মোট গণনা করা হচ্ছে...</div></div>`;
+    updateClockTotal();
+  } else if(mode==='routine') {
+    if (fab) fab.classList.remove('hidden');
+    const routines=DB.get('routine');const todayR=routines.find(r=>r.date===today())||{date:today(),prayer:false,earlyRise:false,exercise:false,family:false,study:false,business:false};
+    const items=[['prayer','🕌 নামাজ/কুরআন'],['earlyRise','🌅 ভোর ৫টায় ওঠা'],['exercise','🏃 ব্যায়াম'],['family','👨‍👩‍👧 পরিবার সময়'],['study','📖 পড়াশোনা'],['business','📊 ব্যবসা রিভিউ']];
+    const score=items.filter(([k])=>todayR[k]).length;
+    el.innerHTML=`<div class="card"><div class="card-title"><span class="icon">🕋</span> আজকের রুটিন</div><div style="margin-bottom:14px">${items.map(([key,label])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px;font-weight:500">${label}</span>${canEdit?`<button onclick="toggleRoutine('${key}')" style="width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;transition:all 0.3s;background:${todayR[key]?'var(--green)':'#e0e0e0'};position:relative"><span style="position:absolute;top:3px;${todayR[key]?'right:3px':'left:3px'};width:22px;height:22px;border-radius:50%;background:#fff;transition:all 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></span></button>`:`<span class="${todayR[key]?'badge badge-green':'badge badge-red'}">${todayR[key]?'✅':'❌'}</span>`}</div>`).join('')}</div><div style="text-align:center;background:${score>=5?'var(--green-light)':score>=3?'var(--orange-light)':'var(--red-light)'};border-radius:10px;padding:14px"><div style="font-size:28px;font-weight:800;color:${score>=5?'var(--green)':score>=3?'var(--orange)':'var(--red)'}">${score}/6</div><div class="progress-wrap" style="margin-top:10px"><div class="progress-fill" style="width:${(score/6)*100}%"></div></div></div></div>`;
+  } else if (mode === 'planner') {
+    if (fab) fab.classList.remove('hidden');
+    const todos = plannerTodos();
+    const meetings = plannerMeetings();
+    const pendingCount = todos.filter(t => !t.done).length;
+    const todayCount = todos.filter(t => t.dueDate === today()).length;
+    const meetingCount = meetings.length;
+    const nextMeeting = meetings[0] || null;
+    const connected = DB.get('googleCalendar', { connected:false, email:'' });
+
+    el.innerHTML = `
+      <div class="card">
+        <div class="card-title"><span class="icon">🗂️</span> টুডু, কাজ এবং মিটিং</div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-card" style="background:#eef2ff;color:var(--primary)"><div class="kpi-label">পেন্ডিং</div><div class="kpi-value">${pendingCount}</div><div class="kpi-unit">টাস্ক</div></div>
+          <div class="kpi-card" style="background:var(--green-light);color:var(--green)"><div class="kpi-label">আজকের</div><div class="kpi-value">${todayCount}</div><div class="kpi-unit">টাস্ক</div></div>
+          <div class="kpi-card" style="background:#fff3e0;color:var(--orange)"><div class="kpi-label">মিটিং</div><div class="kpi-value">${meetingCount}</div><div class="kpi-unit">সূচি</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px">
+          <div style="font-size:12px;color:var(--text-muted)">Google Calendar: <strong style="color:${connected.connected ? 'var(--green)' : 'var(--red)'}">${connected.connected ? 'কানেক্টেড' : 'কানেক্ট করা হয়নি'}</strong></div>
+          <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="connectGoogleCalendar()">🔗 কানেক্ট</button>
+        </div>
+        ${nextMeeting ? `<div style="margin-top:12px;padding:12px;border-radius:12px;background:#fafafa;border:1px solid var(--border)"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">পরবর্তী মিটিং</div><div style="font-weight:800;color:var(--primary)">${escHtml(nextMeeting.title || '')}</div><div style="font-size:12px;color:var(--text-muted);margin-top:4px">${escHtml(fmtPlannerDateTime(nextMeeting.date, nextMeeting.startTime))}</div></div>` : ''}
+      </div>
+
+      <div class="card">
+        <div class="tab-bar" id="plannerTabs">
+          <button class="planner-tab tab ${plannerView==='todo'?'active':''}" onclick="plannerTab('todo',this)">✅ টুডু</button>
+          <button class="planner-tab tab ${plannerView==='meeting'?'active':''}" onclick="plannerTab('meeting',this)">📅 মিটিং</button>
+        </div>
+
+        ${plannerView === 'todo' ? `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <input class="form-input" placeholder="টাস্ক খুঁজুন..." value="${escHtml(todoSearchTerm)}" oninput="setTodoSearch(this.value)" style="margin-bottom:0">
+            <select class="form-select" onchange="setTodoFilterCategory(this.value)">
+              <option value="all" ${todoFilterCategory==='all'?'selected':''}>সব ক্যাটাগরি</option>
+              ${todoCategories.map(c => `<option value="${escHtml(c)}" ${todoFilterCategory===c?'selected':''}>${escHtml(c)}</option>`).join('')}
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="setTodoSortMode('time')">⏱️ সময়</button>
+            <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="setTodoSortMode('priority')">🚩 প্রাধান্য</button>
+            <button class="btn btn-secondary" style="padding:8px 12px;border-radius:10px;font-size:12px" onclick="setTodoSortMode('category')">🏷️ ক্যাটাগরি</button>
+          </div>
+          ${todoGroupsHtml(todos)}
+        ` : `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <input class="form-input" placeholder="মিটিং খুঁজুন..." value="${escHtml(meetingSearchTerm)}" oninput="setMeetingSearch(this.value)" style="margin-bottom:0">
+            <select class="form-select" onchange="setMeetingFilterMode(this.value)">
+              <option value="upcoming" ${meetingFilterMode==='upcoming'?'selected':''}>আপকামিং</option>
+              <option value="past" ${meetingFilterMode==='past'?'selected':''}>পূর্বের</option>
+              <option value="all" ${meetingFilterMode==='all'?'selected':''}>সব</option>
+            </select>
+          </div>
+          ${meetingGroupsHtml(meetings)}
+        `}
+      </div>
+    `;
+  } else {
+    if (fab) fab.classList.remove('hidden');
+    el.innerHTML = '';
+  }
+}
+function toggleRoutine(key){if(!AUTH.canEdit()){showToast('⛔ অনুমতি নেই','error');return;}const routines=DB.get('routine');let todayR=routines.find(r=>r.date===today());if(!todayR){todayR={date:today(),prayer:false,earlyRise:false,exercise:false,family:false,study:false,business:false};routines.push(todayR);}todayR[key]=!todayR[key];DB.set('routine',routines);renderLife('routine');renderDashboard();}
+function updateClock(key,val){const clocks=DB.get('clock');let tc=clocks.find(c=>c.date===today());if(!tc){tc={date:today(),sleep:0,work:0,study:0,exercise:0,rest:0,family:0};clocks.push(tc);}tc[key]=parseFloat(val)||0;DB.set('clock',clocks);updateClockTotal();}
+function updateClockTotal(){const clocks=DB.get('clock');const tc=clocks.find(c=>c.date===today());if(!tc)return;const total=(tc.sleep||0)+(tc.work||0)+(tc.study||0)+(tc.exercise||0)/60+(tc.rest||0)+(tc.family||0);const el=document.getElementById('clockTotal');if(el)el.innerHTML=`মোট ব্যবহৃত: <strong>${total.toFixed(1)} ঘণ্টা</strong> · বাকি: <strong style="color:var(--accent)">${Math.max(0,24-total).toFixed(1)} ঘণ্টা</strong>`;}
+function toggleTodo(id, done) {
+  const items = DB.get('todoItems', []);
+  const item = items.find(t => t.id === id);
+  if (!item) return;
+  item.done = !!done;
+  item.updatedAt = new Date().toISOString();
+  DB.set('todoItems', items);
+  renderLife('planner');
+  renderDashboard();
+}
+function editTodo(id) {
+  const items = DB.get('todoItems', []);
+  const item = items.find(t => t.id === id);
+  if (!item) return;
+  todoEditId = id;
+  document.getElementById('modalIcon').textContent = '✅';
+  document.getElementById('modalTitleText').textContent = 'টাস্ক সম্পাদনা';
+  document.getElementById('modalBody').innerHTML = todoForm(item);
+  document.getElementById('addModal').classList.add('open');
+}
+function deleteTodo(id) {
+  if (!confirm('এই টাস্ক মুছতে চান?')) return;
+  const items = DB.get('todoItems', []).filter(t => t.id !== id);
+  DB.set('todoItems', items);
+  renderLife('planner');
+  renderDashboard();
+}
+function todoForm(item={}) {
+  const isEdit = !!item.id;
+  return `
+    <div class="form-group"><label class="form-label">টাস্ক শিরোনাম</label><input class="form-input" id="todo-title" value="${escHtml(item.title || '')}" placeholder="উদাহরণ: ক্লায়েন্টকে কল করা"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">ক্যাটাগরি</label>
+        <select class="form-select" id="todo-category">${todoCategories.map(c => `<option value="${escHtml(c)}" ${String(item.category || '')===c ? 'selected' : ''}>${escHtml(c)}</option>`).join('')}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">প্রাধান্য</label>
+        <select class="form-select" id="todo-priority">${todoPriorities.map(p => `<option value="${escHtml(p)}" ${String(item.priority || 'মাঝারি')===p ? 'selected' : ''}>${escHtml(p)}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="todo-date" type="date" value="${item.dueDate || today()}"></div>
+      <div class="form-group"><label class="form-label">সময়</label><input class="form-input" id="todo-time" type="time" value="${item.dueTime || '09:00'}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">নোট</label><textarea class="form-input" id="todo-note" rows="4" placeholder="সংক্ষিপ্ত নোট">${escHtml(item.note || '')}</textarea></div>
+    <button class="btn btn-primary" onclick="saveTodo()">${isEdit ? '✅ আপডেট' : '➕ সংরক্ষণ করুন'}</button>
+  `;
+}
+function saveTodo() {
+  const title = document.getElementById('todo-title').value.trim();
+  const category = document.getElementById('todo-category').value;
+  const priority = document.getElementById('todo-priority').value;
+  const dueDate = document.getElementById('todo-date').value;
+  const dueTime = document.getElementById('todo-time').value;
+  const note = document.getElementById('todo-note').value.trim();
+  if (!title) { showToast('⚠️ টাস্কের শিরোনাম দিন','error'); return; }
+  const items = DB.get('todoItems', []);
+  if (todoEditId) {
+    const idx = items.findIndex(t => t.id === todoEditId);
+    if (idx >= 0) {
+      items[idx] = { ...items[idx], title, category, priority, dueDate, dueTime, note, updatedAt: new Date().toISOString() };
+    }
+    todoEditId = null;
+  } else {
+    items.unshift({
+      id: 'todo_' + Date.now(),
+      title, category, priority, dueDate, dueTime, note,
+      done: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
+  DB.set('todoItems', items);
+  closeModal('addModal');
+  renderLife('planner');
+  renderDashboard();
+  showToast('✅ টাস্ক সংরক্ষিত হয়েছে','success');
+}
+function meetingForm(item={}) {
+  const isEdit = !!item.id;
+  return `
+    <div class="form-group"><label class="form-label">মিটিং টাইটেল</label><input class="form-input" id="meeting-title" value="${escHtml(item.title || '')}" placeholder="উদাহরণ: সাপ্তাহিক টিম রিভিউ"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="meeting-date" type="date" value="${item.date || today()}"></div>
+      <div class="form-group"><label class="form-label">শুরু</label><input class="form-input" id="meeting-start" type="time" value="${item.startTime || '10:00'}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">শেষ</label><input class="form-input" id="meeting-end" type="time" value="${item.endTime || '11:00'}"></div>
+      <div class="form-group"><label class="form-label">লোকেশন</label><input class="form-input" id="meeting-location" value="${escHtml(item.location || '')}" placeholder="Office / Zoom / Meet"></div>
+    </div>
+    <div class="form-group"><label class="form-label">বর্ণনা</label><textarea class="form-input" id="meeting-note" rows="4" placeholder="মিটিং এজেন্ডা, লিংক, নোট">${escHtml(item.note || '')}</textarea></div>
+    <label style="display:flex;align-items:center;gap:8px;margin:6px 0 14px;font-size:13px;color:var(--text-muted)"><input type="checkbox" id="meeting-sync" ${item.syncToCalendar ? 'checked' : ''}> Google Calendar template এ sync link রাখুন</label>
+    <button class="btn btn-primary" onclick="saveMeeting()">${isEdit ? '✅ আপডেট' : '➕ সংরক্ষণ করুন'}</button>
+  `;
+}
+function saveMeeting() {
+  const title = document.getElementById('meeting-title').value.trim();
+  const date = document.getElementById('meeting-date').value;
+  const startTime = document.getElementById('meeting-start').value;
+  const endTime = document.getElementById('meeting-end').value;
+  const location = document.getElementById('meeting-location').value.trim();
+  const note = document.getElementById('meeting-note').value.trim();
+  const syncToCalendar = document.getElementById('meeting-sync').checked;
+  if (!title || !date || !startTime) { showToast('⚠️ টাইটেল, তারিখ এবং সময় দিন','error'); return; }
+  const items = DB.get('meetings', []);
+  if (meetingEditId) {
+    const idx = items.findIndex(m => m.id === meetingEditId);
+    if (idx >= 0) {
+      items[idx] = { ...items[idx], title, date, startTime, endTime, location, note, syncToCalendar, updatedAt: new Date().toISOString() };
+    }
+    meetingEditId = null;
+  } else {
+    items.unshift({
+      id: 'meet_' + Date.now(),
+      title, date, startTime, endTime, location, note, syncToCalendar,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+  }
+  DB.set('meetings', items);
+  closeModal('addModal');
+  renderLife('planner');
+  renderDashboard();
+  showToast('✅ মিটিং সংরক্ষিত হয়েছে','success');
+}
+function editMeeting(id) {
+  const items = DB.get('meetings', []);
+  const item = items.find(m => m.id === id);
+  if (!item) return;
+  meetingEditId = id;
+  document.getElementById('modalIcon').textContent = '📅';
+  document.getElementById('modalTitleText').textContent = 'মিটিং সম্পাদনা';
+  document.getElementById('modalBody').innerHTML = meetingForm(item);
+  document.getElementById('addModal').classList.add('open');
+}
+function deleteMeeting(id) {
+  if (!confirm('এই মিটিং মুছতে চান?')) return;
+  const items = DB.get('meetings', []).filter(m => m.id !== id);
+  DB.set('meetings', items);
+  renderLife('planner');
+  renderDashboard();
+}
+async function copyMeetingLink(link) {
+  try {
+    await navigator.clipboard.writeText(link);
+    showToast('🔗 লিংক কপি হয়েছে','success');
+  } catch {
+    showToast('কপি করা যায়নি','error');
+  }
+}
+function connectGoogleCalendar() {
+  if (location.protocol === 'file:') {
+    showToast('Google Calendar কানেক্ট করতে backend server দরকার','error');
+    return;
+  }
+  window.location.href = '/api/auth/google';
+}
+
+// ── SETTINGS ──
+// ── SETTINGS ──
+function loadSettingsForm(){const s=DB.settings();document.getElementById('set-name').value=s.name||'';document.getElementById('set-phone').value=s.phone||'';document.getElementById('set-budget').value=s.budget||'';document.getElementById('set-debt-limit').value=s.debtLimit||'';}
+function saveSettings(){DB.set('settings',{name:document.getElementById('set-name').value,phone:document.getElementById('set-phone').value,budget:parseFloat(document.getElementById('set-budget').value)||30000,debtLimit:parseFloat(document.getElementById('set-debt-limit').value)||100000});showToast('✅ সেটিংস সংরক্ষিত!','success');}
+function clearAllData(){if(!confirm('সব ডেটা মুছবেন?'))return;const ns=DB.ns();['transactions','debts','personal','goat','tea','goals','routine','clock','customBiz','customBizEntries','office'].forEach(k=>localStorage.removeItem(ns+k));renderDashboard();showToast('🗑️ মুছে ফেলা হয়েছে');}
+
+// ── ADD MODAL DISPATCH ──
+function openAddModal(){
+  if(!AUTH.canEdit()){showToast('⛔ এডিট অনুমতি নেই','error');return;}
+  if(currentPage==='users'){openAddUserModal();return;}
+  let modal;
+  if (currentPage === 'life' && lifeMode === 'planner') {
+    modal = plannerView === 'meeting'
+      ? { icon:'📅', title:'নতুন মিটিং', body:meetingForm() }
+      : { icon:'✅', title:'নতুন টুডু টাস্ক', body:todoForm() };
+  } else {
+    const modals = {
+      tx:{icon:'💰',title:'নতুন লেনদেন',body:txForm()},
+      debt:{icon:'🧾',title:debtMode==='debt'?'নতুন ঋণ':debtMode==='personal'?'নতুন হিসাব':'নতুন অফিস এন্ট্রি',body:debtMode==='debt'?debtForm():debtMode==='personal'?personalForm():officeForm()},
+      biz:{icon:bizMode==='goat'?'🐐':bizMode==='tea'?'🍃':bizMode==='goals'?'🎯':(DB.get('customBiz').find(b=>b.id===bizMode)||{icon:'🏪'}).icon,title:bizMode==='goat'?'ছাগল খামার এন্ট্রি':bizMode==='tea'?'চা বাগান এন্ট্রি':bizMode==='goals'?'নতুন লক্ষ্য':(DB.get('customBiz').find(b=>b.id===bizMode)||{name:'ব্যবসা'}).name+' এন্ট্রি',body:bizMode==='goat'?farmForm('goat'):bizMode==='tea'?farmForm('tea'):bizMode==='goals'?goalForm():customBizEntryForm(bizMode)},
+      life:{icon:'⏰',title:'জীবন-ঘড়ি',body:''},
+      users:{icon:'👤',title:'নতুন ব্যবহারকারী',body:''},
+    };
+    modal = modals[currentPage] || modals.tx;
+  }
+  document.getElementById('modalIcon').textContent=modal.icon;
+  document.getElementById('modalTitleText').textContent=modal.title;
+  document.getElementById('modalBody').innerHTML=modal.body;
+  document.getElementById('addModal').classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function txForm(){return`<div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="f-date" type="date" value="${today()}"></div><div class="form-row"><div class="form-group"><label class="form-label">মডিউল</label><select class="form-select" id="f-module"><option>ব্যক্তিগত</option><option>ছাগল খামার</option><option>চা বাগান</option><option>সাধারণ</option></select></div><div class="form-group"><label class="form-label">ধরন</label><select class="form-select" id="f-type"><option>আয়</option><option>ব্যয়</option></select></div></div><div class="form-group"><label class="form-label">ক্যাটাগরি</label><input class="form-input" id="f-cat" placeholder="যেমন: বিক্রয়, খরচ"></div><div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="f-desc" placeholder="বিস্তারিত লিখুন"></div><div class="form-group"><label class="form-label">পরিমাণ (৳)</label><input class="form-input" id="f-amount" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">নোট (ঐচ্ছিক)</label><input class="form-input" id="f-note" placeholder="অতিরিক্ত তথ্য"></div><button class="btn btn-primary" onclick="saveTx()">✅ সংরক্ষণ করুন</button>`;}
+function saveTx(){const type=document.getElementById('f-type').value;const amount=parseFloat(document.getElementById('f-amount').value)||0;const desc=document.getElementById('f-desc').value.trim();if(!desc||!amount){showToast('⚠️ বিবরণ ও পরিমাণ আবশ্যক','error');return;}const tx={id:uid(),date:document.getElementById('f-date').value,module:document.getElementById('f-module').value,category:document.getElementById('f-cat').value||'সাধারণ',type,desc,income:type==='আয়'?amount:0,expense:type==='ব্যয়'?amount:0,note:document.getElementById('f-note').value,month:document.getElementById('f-date').value.slice(0,7)};const txs=DB.get('transactions');txs.push(tx);DB.set('transactions',txs);closeModal('addModal');renderTxList(txFilter);renderDashboard();showToast('✅ লেনদেন সংরক্ষিত!','success');}
+
+function debtForm(){return`<div class="form-group"><label class="form-label">ঋণদাতার নাম</label><input class="form-input" id="d-lender" placeholder="যেমন: ব্র্যাক ব্যাংক"></div><div class="form-group"><label class="form-label">উদ্দেশ্য</label><input class="form-input" id="d-purpose" placeholder="ব্যবসায়িক ঋণ"></div><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="d-date" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">মূল টাকা (৳)</label><input class="form-input" id="d-principal" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">এ পর্যন্ত পরিশোধ (৳)</label><input class="form-input" id="d-paid" type="number" value="0"></div><div class="form-group"><label class="form-label">ফোন নম্বর</label><input class="form-input" id="d-phone" type="tel" placeholder="8801..."></div><div class="form-group"><label class="form-label">মাসিক কিস্তি (৳)</label><input class="form-input" id="d-installment" type="number" value="0"></div><button class="btn btn-primary" onclick="saveDebt()">✅ ঋণ সংরক্ষণ করুন</button>`;}
+function saveDebt(){const p=parseFloat(document.getElementById('d-principal').value)||0;const paid=parseFloat(document.getElementById('d-paid').value)||0;const l=document.getElementById('d-lender').value.trim();if(!l||!p){showToast('⚠️ তথ্য পূরণ করুন','error');return;}const debt={id:uid(),lender:l,purpose:document.getElementById('d-purpose').value,date:document.getElementById('d-date').value,principal:p,paid,remaining:p-paid,phone:document.getElementById('d-phone').value,installment:parseFloat(document.getElementById('d-installment').value)||0,status:p-paid>0?'সক্রিয়':'পরিশোধিত'};const debts=DB.get('debts');debts.push(debt);DB.set('debts',debts);closeModal('addModal');renderDebt();renderDashboard();showToast('✅ ঋণ সংরক্ষিত!','success');}
+
+function personalForm(){return`<div class="form-group"><label class="form-label">ব্যক্তির নাম</label><input class="form-input" id="p-person" placeholder="নাম লিখুন"></div><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="p-date" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="p-desc" placeholder="কী উপলক্ষে?"></div><div class="form-row"><div class="form-group"><label class="form-label">আমি দিয়েছি (৳)</label><input class="form-input" id="p-gave" type="number" value="0"></div><div class="form-group"><label class="form-label">আমি পেয়েছি (৳)</label><input class="form-input" id="p-got" type="number" value="0"></div></div><div class="form-group"><label class="form-label">ফোন</label><input class="form-input" id="p-phone" type="tel"></div><button class="btn btn-primary" onclick="savePersonal()">✅ সংরক্ষণ করুন</button>`;}
+function savePersonal(){const person=document.getElementById('p-person').value.trim();if(!person){showToast('⚠️ নাম আবশ্যক','error');return;}const p={id:uid(),person,date:document.getElementById('p-date').value,desc:document.getElementById('p-desc').value,iGave:parseFloat(document.getElementById('p-gave').value)||0,iGot:parseFloat(document.getElementById('p-got').value)||0,phone:document.getElementById('p-phone').value};const pers=DB.get('personal');pers.push(p);DB.set('personal',pers);closeModal('addModal');renderDebt();showToast('✅ হিসাব সংরক্ষিত!','success');}
+
+function officeForm(){return`<div class="form-group"><label class="form-label">শিরোনাম</label><input class="form-input" id="of-title" placeholder="মাসিক বেতন, অফিস ভাড়া..."></div><div class="form-row"><div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="of-date" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">ক্যাটাগরি</label><select class="form-select" id="of-cat"><option>বেতন</option><option>ভাড়া</option><option>বিক্রয়</option><option>সরবরাহ</option><option>অন্যান্য</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">আয় (৳)</label><input class="form-input" id="of-income" type="number" value="0"></div><div class="form-group"><label class="form-label">ব্যয় (৳)</label><input class="form-input" id="of-expense" type="number" value="0"></div></div><div class="form-group"><label class="form-label">বেতন পরিশোধ (৳)</label><input class="form-input" id="of-salary" type="number" value="0"></div><button class="btn btn-primary" onclick="saveOffice()">✅ সংরক্ষণ করুন</button>`;}
+function saveOffice(){const title=document.getElementById('of-title').value.trim();if(!title){showToast('⚠️ শিরোনাম আবশ্যক','error');return;}const entry={id:uid(),title,date:document.getElementById('of-date').value,category:document.getElementById('of-cat').value,income:parseFloat(document.getElementById('of-income').value)||0,expense:parseFloat(document.getElementById('of-expense').value)||0,salary:parseFloat(document.getElementById('of-salary').value)||0};const list=DB.get('office');list.push(entry);DB.set('office',list);closeModal('addModal');renderDebt();showToast('✅ অফিস এন্ট্রি সংরক্ষিত!','success');}
+
+function farmForm(type){return`<div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="gf-date" type="date" value="${today()}"></div><div class="form-row"><div class="form-group"><label class="form-label">${type==='goat'?'ট্যাগ':'সেকশন'}</label><input class="form-input" id="gf-tag" placeholder="${type==='goat'?'GT-001':'SEC-01'}"></div><div class="form-group"><label class="form-label">ধরন</label><select class="form-select" id="gf-type"><option>আয়</option><option>ব্যয়</option></select></div></div><div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="gf-desc" placeholder="${type==='goat'?'ছাগল বিক্রয়/ভ্যাকসিন...':'পাতা বিক্রয়/সার...'}"></div><div class="form-row"><div class="form-group"><label class="form-label">আয় (৳)</label><input class="form-input" id="gf-income" type="number" value="0"></div><div class="form-group"><label class="form-label">ব্যয় (৳)</label><input class="form-input" id="gf-expense" type="number" value="0"></div></div><button class="btn btn-primary" onclick="saveFarm('${type}')">✅ সংরক্ষণ করুন</button>`;}
+function saveFarm(type){const desc=document.getElementById('gf-desc').value.trim();if(!desc){showToast('⚠️ বিবরণ আবশ্যক','error');return;}const item={id:uid(),date:document.getElementById('gf-date').value,tag:document.getElementById('gf-tag').value,section:document.getElementById('gf-tag').value,type:document.getElementById('gf-type').value,desc,income:parseFloat(document.getElementById('gf-income').value)||0,expense:parseFloat(document.getElementById('gf-expense').value)||0};const data=DB.get(type);data.push(item);DB.set(type,data);closeModal('addModal');renderBiz(type);showToast('✅ সংরক্ষিত!','success');}
+
+function goalForm(){return`<div class="form-group"><label class="form-label">ক্যাটাগরি</label><select class="form-select" id="g-cat"><option>ব্যবসা</option><option>ফিন্যান্স</option><option>স্বাস্থ্য</option><option>পরিবার</option><option>শিক্ষা</option><option>আধ্যাত্মিক</option></select></div><div class="form-group"><label class="form-label">লক্ষ্য</label><input class="form-input" id="g-goal" placeholder="লক্ষ্যের বিবরণ"></div><div class="form-group"><label class="form-label">পরিকল্পনা</label><input class="form-input" id="g-plan" placeholder="কীভাবে অর্জন করবেন?"></div><div class="form-row"><div class="form-group"><label class="form-label">শুরু</label><input class="form-input" id="g-start" type="date" value="${today()}"></div><div class="form-group"><label class="form-label">শেষ</label><input class="form-input" id="g-end" type="date"></div></div><button class="btn btn-primary" onclick="saveGoal()">✅ লক্ষ্য সংরক্ষণ করুন</button>`;}
+function saveGoal(){const goal=document.getElementById('g-goal').value.trim();if(!goal){showToast('⚠️ লক্ষ্য আবশ্যক','error');return;}const g={id:uid(),category:document.getElementById('g-cat').value,goal,reason:'',plan:document.getElementById('g-plan').value,progress:0,start:document.getElementById('g-start').value,end:document.getElementById('g-end').value,status:'চলমান'};const goals=DB.get('goals');goals.push(g);DB.set('goals',goals);closeModal('addModal');renderBiz('goals');showToast('✅ লক্ষ্য সংরক্ষিত!','success');}
+
+// ── WHATSAPP ──
+function getPhone(){return DB.settings().phone||'8801712345678';}
+function openWA(phone,msg){window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank');}
+function sendWA(type){
+  const s=DB.settings();const txs=DB.get('transactions');const m=monthCode();
+  const income=txs.filter(t=>t.type==='আয়'&&t.month===m).reduce((s,t)=>s+t.income,0);
+  const expense=txs.filter(t=>t.type==='ব্যয়'&&t.month===m).reduce((s,t)=>s+t.expense,0);
+  const debt=DB.get('debts').filter(d=>d.status==='সক্রিয়').reduce((s,d)=>s+d.remaining,0);
+  const goatNet=DB.get('goat').reduce((s,g)=>s+g.income-g.expense,0);
+  const teaNet=DB.get('tea').reduce((s,t)=>s+t.income-t.expense,0);
+  const dateStr=new Date().toLocaleDateString('bn-BD');
+  let msg='';
+  if(type==='daily')msg=`🇧🇩 *জাহাঙ্গীর ফিন্যান্স সিস্টেম*\n📅 ${dateStr}\n\n📈 আয়: ৳${income.toLocaleString('en-IN')}\n📉 ব্যয়: ৳${expense.toLocaleString('en-IN')}\n💵 নিট: ৳${(income-expense).toLocaleString('en-IN')}\n🐐 ছাগল: ৳${goatNet.toLocaleString('en-IN')}\n🍃 চা: ৳${teaNet.toLocaleString('en-IN')}\n🔴 ঋণ: ৳${debt.toLocaleString('en-IN')}\n\n📊 জাহাঙ্গীর সিস্টেম`;
+  else if(type==='debt'){const debts=DB.get('debts').filter(d=>d.status==='সক্রিয়');msg=`🧾 *ঋণ ট্র্যাকার*\n📅 ${dateStr}\n\n${debts.map(d=>`• ${d.lender}: ৳${d.remaining.toLocaleString('en-IN')}`).join('\n')||'কোনো ঋণ নেই ✅'}\n\n💰 মোট: ৳${debt.toLocaleString('en-IN')}`;}
+  else if(type==='monthly')msg=`📊 *মাসিক রিপোর্ট*\n📅 ${dateStr}\n\n📈 আয়: ৳${income.toLocaleString('en-IN')}\n📉 ব্যয়: ৳${expense.toLocaleString('en-IN')}\n💵 নিট: ৳${(income-expense).toLocaleString('en-IN')}\n🔴 ঋণ: ৳${debt.toLocaleString('en-IN')}\n\n${income>expense?'✅ লাভজনক মাস!':'⚠️ ব্যয় বেশি!'}`;
+  else if(type==='personal'){const pers=DB.get('personal');const g={};pers.forEach(p=>{if(!g[p.person])g[p.person]={d:0,c:0};g[p.person].d+=p.iGave;g[p.person].c+=p.iGot;});msg=`🤝 *ব্যক্তিগত হিসাব*\n📅 ${dateStr}\n\n${Object.entries(g).map(([n,v])=>`• ${n}: ${v.d>v.c?'আমি পাব':'আমি দেব'} ৳${Math.abs(v.d-v.c).toLocaleString('en-IN')}`).join('\n')||'কোনো হিসাব নেই'}`;}
+  openWA(getPhone(),msg);
+}
+function sendDebtWA(id){const d=DB.get('debts').find(x=>x.id===id);if(!d)return;openWA(d.phone||getPhone(),`💳 *ঋণ রিমাইন্ডার*\n\nঋণদাতা: ${d.lender}\nমূল: ৳${d.principal.toLocaleString('en-IN')}\n*বকেয়া: ৳${d.remaining.toLocaleString('en-IN')}*\n\n${DB.settings().name}`);}
+function sendPersonalWA(person, bal, phone) {
+  const records = DB.get('personal').filter(p => p.person === person);
+  records.sort((a,b) => new Date(a.date) - new Date(b.date));
+  const ownerName = DB.settings().name || 'জাহাঙ্গীর';
+  const totalGave = records.reduce((s,r)=>s+(r.iGave||0),0);
+  const totalGot  = records.reduce((s,r)=>s+(r.iGot||0),0);
+  const b = parseFloat(bal);
+  const dateStr = new Date().toLocaleDateString('bn-BD');
+  let runBal = 0;
+  const txLines = records.map(r => {
+    runBal += (r.iGave||0) - (r.iGot||0);
+    const balLabel = runBal > 0 ? `আমি পাব ৳${Math.abs(runBal).toLocaleString('en-IN')}` : runBal < 0 ? `আমি দেব ৳${Math.abs(runBal).toLocaleString('en-IN')}` : 'সমতা';
+    return `📌 ${new Date(r.date).toLocaleDateString('bn-BD',{day:'2-digit',month:'short'})} | ${r.desc||'-'}` +
+      (r.iGave > 0 ? ` | দিলাম: ৳${r.iGave.toLocaleString('en-IN')}` : '') +
+      (r.iGot  > 0 ? ` | পেলাম: ৳${r.iGot.toLocaleString('en-IN')}` : '') +
+      ` | ${balLabel}`;
+  }).join('\n');
+
+  const msg =
+`🤝 *ব্যক্তিগত লেনদেন রিপোর্ট*
+📅 তারিখ: ${dateStr}
+━━━━━━━━━━━━━━
+👤 *${person}* সাহেব/আপা,
+
+📤 মোট দিয়েছি : ৳${totalGave.toLocaleString('en-IN')}
+📥 মোট পেয়েছি : ৳${totalGot.toLocaleString('en-IN')}
+💰 *বর্তমান ব্যালেন্স: ${b > 0 ? `আমি পাব ৳${Math.abs(b).toLocaleString('en-IN')}` : b < 0 ? `আমি দেব ৳${Math.abs(b).toLocaleString('en-IN')}` : 'সমতা'}*
+
+━━━━━━━━━━━━━━
+📋 *লেনদেন বিবরণ (${records.length}টি)*
+${txLines || 'কোনো লেনদেন নেই'}
+━━━━━━━━━━━━━━
+📊 জাহাঙ্গীর সিস্টেম · ${ownerName}`;
+
+  const target = phone || getPhone();
+  openWA(target, msg);
+}
+
+function deletePersonalRecord(id){
+  if(!AUTH.canEdit()){showToast('⛔ অনুমতি নেই','error');return;}
+  if(!confirm('এই রেকর্ড মুছবেন?'))return;
+  DB.set('personal',DB.get('personal').filter(p=>p.id!==id));
+  renderDebt();showToast('✅ মুছে ফেলা হয়েছে');
+}
+
+function editPersonalRecord(id){
+  const rec=DB.get('personal').find(p=>p.id===id);if(!rec)return;
+  document.getElementById('modalIcon').textContent='✏️';
+  document.getElementById('modalTitleText').textContent='হিসাব সম্পাদনা';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="form-group"><label class="form-label">ব্যক্তির নাম</label><input class="form-input" id="p-person" value="${rec.person}"></div>
+    <div class="form-group"><label class="form-label">তারিখ</label><input class="form-input" id="p-date" type="date" value="${rec.date}"></div>
+    <div class="form-group"><label class="form-label">বিবরণ</label><input class="form-input" id="p-desc" value="${rec.desc||''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">আমি দিয়েছি (৳)</label><input class="form-input" id="p-gave" type="number" value="${rec.iGave||0}"></div>
+      <div class="form-group"><label class="form-label">আমি পেয়েছি (৳)</label><input class="form-input" id="p-got" type="number" value="${rec.iGot||0}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">ফোন নম্বর</label><input class="form-input" id="p-phone" type="tel" value="${rec.phone||''}"></div>
+    <button class="btn btn-primary" onclick="updatePersonalRecord('${id}')">✅ আপডেট করুন</button>`;
+  document.getElementById('addModal').classList.add('open');
+}
+
+function updatePersonalRecord(id){
+  const pers=DB.get('personal');const idx=pers.findIndex(p=>p.id===id);if(idx===-1)return;
+  const person=document.getElementById('p-person').value.trim();
+  if(!person){showToast('⚠️ নাম আবশ্যক','error');return;}
+  pers[idx]={...pers[idx],person,date:document.getElementById('p-date').value,desc:document.getElementById('p-desc').value,iGave:parseFloat(document.getElementById('p-gave').value)||0,iGot:parseFloat(document.getElementById('p-got').value)||0,phone:document.getElementById('p-phone').value};
+  DB.set('personal',pers);closeModal('addModal');renderDebt();showToast('✅ হিসাব আপডেট হয়েছে!','success');
+}
+
+// ── DEMO DATA ──
+function loadDemoData(){
+  if(!confirm('ডেমো ডেটা লোড করবেন?'))return;
+  const m=monthCode();
+  DB.set('transactions',[{id:'t1',date:'2026-06-01',module:'ব্যক্তিগত',category:'বিজনেস সেল',type:'আয়',desc:'পিডিএফ প্রোডাক্ট বিক্রয়',income:25000,expense:0,note:'',month:m},{id:'t2',date:'2026-06-02',module:'ছাগল খামার',category:'খাবার',type:'ব্যয়',desc:'ছাগলের ভুসি ও ফিড',income:0,expense:15000,note:'',month:m},{id:'t3',date:'2026-06-03',module:'চা বাগান',category:'পাতা বিক্রয়',type:'আয়',desc:'কাঁচা পাতা বিক্রি',income:18000,expense:0,note:'',month:m},{id:'t4',date:'2026-06-04',module:'ব্যক্তিগত',category:'বাড়ি খরচ',type:'ব্যয়',desc:'মাসিক বাজার',income:0,expense:8000,note:'',month:m},{id:'t5',date:'2026-06-05',module:'ব্যক্তিগত',category:'ফ্রিল্যান্স',type:'আয়',desc:'ডিজাইন কাজ',income:12000,expense:0,note:'',month:m}]);
+  DB.set('debts',[{id:'d1',lender:'ব্র্যাক ব্যাংক',purpose:'ব্যবসায়িক ঋণ',date:'2026-03-01',principal:100000,paid:31500,remaining:68500,phone:'8801711111111',installment:10000,status:'সক্রিয়'},{id:'d2',lender:'করিম চাচা',purpose:'জরুরি',date:'2026-04-01',principal:50000,paid:15000,remaining:35000,phone:'8801722222222',installment:5000,status:'সক্রিয়'}]);
+  DB.set('goat',[{id:'g1',date:'2026-06-01',tag:'GT-ALL',type:'ব্যয়',desc:'মাসিক ভুসি',income:0,expense:15000},{id:'g2',date:'2026-06-04',tag:'GT-003',type:'আয়',desc:'ছাগল বিক্রয়',income:25000,expense:0}]);
+  DB.set('tea',[{id:'te1',date:'2026-06-01',section:'SEC-01',type:'আয়',desc:'পাতা বিক্রি',income:18000,expense:0},{id:'te2',date:'2026-06-05',section:'SEC-02',type:'আয়',desc:'পাতা বিক্রি ২',income:22000,expense:0}]);
+  DB.set('goals',[{id:'go1',category:'ব্যবসা',goal:'৫টি ডিজিটাল প্রোডাক্ট লঞ্চ',reason:'আয় বাড়ানো',plan:'সপ্তাহে ১টি',progress:15,start:'2026-06-01',end:'2026-08-31',status:'চলমান'}]);
+  DB.set('routine',[{date:today(),prayer:true,earlyRise:true,exercise:true,family:true,study:false,business:true}]);
+  DB.set('personal',[{id:'p1',person:'রিয়াজ ভাই',date:'2026-06-01',desc:'ব্যবসার ধার',iGave:50000,iGot:20000,phone:'8801744444444'}]);
+  navigate('dashboard',document.querySelector('.nav-item'));
+  showToast('✅ ডেমো ডেটা লোড হয়েছে!','success');
+}
+
+// ── PASSWORD PROTECTED ACTIONS ──
+const PROTECTED_PASSWORD = 'Rasty@2025';
+let pendingPwAction = null;
+
+function askPw(action) {
+  pendingPwAction = action;
+  document.getElementById('pwInput').value = '';
+  if (action === 'demo') {
+    document.getElementById('pwModalIcon').textContent = '🎭';
+    document.getElementById('pwModalTitle').textContent = 'ডেমো ডেটা লোড';
+    document.getElementById('pwModalWarn').textContent = 'ডেমো ডেটা লোড করলে বিদ্যমান ডেটা মুছে যাবে।';
+    document.getElementById('pwConfirmBtn').style.background = 'var(--primary)';
+  } else {
+    document.getElementById('pwModalIcon').textContent = '🗑️';
+    document.getElementById('pwModalTitle').textContent = 'সব ডেটা মুছুন';
+    document.getElementById('pwModalWarn').textContent = 'এই অ্যাকশনটি অপরিবর্তনীয়! সব ডেটা স্থায়ীভাবে মুছে যাবে।';
+    document.getElementById('pwConfirmBtn').style.background = '#e53935';
+  }
+  document.getElementById('pwModal').classList.add('open');
+  setTimeout(() => document.getElementById('pwInput').focus(), 300);
+}
+
+function confirmPwAction() {
+  const entered = document.getElementById('pwInput').value;
+  if (entered !== PROTECTED_PASSWORD) {
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').style.borderColor = 'var(--red)';
+    showToast('❌ পাসওয়ার্ড ভুল!', 'error');
+    setTimeout(() => document.getElementById('pwInput').style.borderColor = '', 1500);
+    return;
+  }
+  closeModal('pwModal');
+  if (pendingPwAction === 'demo') loadDemoData();
+  else if (pendingPwAction === 'clear') clearAllData();
+  pendingPwAction = null;
+}
+
+// ── PWA ──
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='flex';});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBanner').style.display='none';});}else{showToast('📱 Browser মেনু > "Add to Home Screen"');}}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+function init() {
+  AUTH.ensureDefaultAdmin();
+  const cu = AUTH.getCurrentUser();
+
+  // Header date
+  const now = new Date();
+  document.getElementById('headerDate').innerHTML = now.toLocaleDateString('bn-BD',{weekday:'short',day:'numeric',month:'short'});
+
+  if (cu) {
+    // Already logged in
+    document.getElementById('loginScreen').classList.remove('show');
+    document.getElementById('app').style.display = 'flex';
+    setupUserUI(cu);
+    updateHeaderForRole();
+    renderDashboard();
+  } else {
+    document.getElementById('loginScreen').classList.add('show');
+  }
+
+  // Close modals on overlay click
+  document.getElementById('addModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('addModal');});
+  document.getElementById('cpModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('cpModal');});
+  document.getElementById('pwModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal('pwModal');});
+
+  // Service worker
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// Splash → App
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    setTimeout(() => { document.getElementById('splash').style.display='none'; init(); }, 600);
+  }, 2000);
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
